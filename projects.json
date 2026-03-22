@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "name": "E-Commerce Platform",
+        "description": "Full-featured e-commerce platform with payment integration, user authentication, and admin dashboard.",
+        "tech": ["React", "Node.js", "MongoDB", "Stripe"],
+        "category": "Web",
+        "stars": 245,
+        "forks": 89,
+        "demo": "https://github.com/amkyawdev/ecommerce"
+    },
+    {
+        "id": 2,
+        "name": "AI Image Generator",
+        "description": "Generate stunning images from text descriptions using stable diffusion and OpenAI API.",
+        "tech": ["Python", "TensorFlow", "React", "FastAPI"],
+        "category": "AI",
+        "stars": 189,
+        "forks": 45,
+        "demo": "https://github.com/amkyawdev/ai-image-gen"
+    },
+    {
+        "id": 3,
+        "name": "Mobile Chat App",
+        "description": "Real-time messaging app with end-to-end encryption, group chats, and media sharing.",
+        "tech": ["React Native", "Firebase", "Socket.io"],
+        "category": "Mobile",
+        "stars": 312,
+        "forks": 102,
+        "demo": "https://github.com/amkyawdev/chat-app"
+    }
+]
