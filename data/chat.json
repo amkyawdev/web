@@ -1,82 +1,152 @@
 {
+    "version": "3.0",
+    "lastUpdated": "2024-01-15T00:00:00Z",
     "rooms": [
         {
             "id": "general",
             "name": "General Discussion",
-            "description": "General chat for all developers",
+            "description": "Welcome to the main chat room! Discuss anything about development, technology, and programming.",
             "icon": "fas fa-comments",
+            "topic": "General discussions about development and tech",
             "createdAt": "2024-01-01T00:00:00Z",
+            "createdBy": "system",
+            "memberCount": 156,
             "isPrivate": false
         },
         {
             "id": "tech",
             "name": "Technology & Innovation",
-            "description": "Discuss latest tech trends and innovations",
+            "description": "Discuss latest tech trends, AI, Web3, and innovative technologies shaping the future.",
             "icon": "fas fa-microchip",
+            "topic": "Latest technology news and innovations",
             "createdAt": "2024-01-01T00:00:00Z",
+            "createdBy": "system",
+            "memberCount": 89,
             "isPrivate": false
         },
         {
             "id": "projects",
             "name": "Project Collaboration",
-            "description": "Collaborate on open source projects",
+            "description": "Collaborate on open source projects, find contributors, and showcase your work.",
             "icon": "fas fa-project-diagram",
+            "topic": "Open source collaboration and project discussions",
             "createdAt": "2024-01-01T00:00:00Z",
+            "createdBy": "system",
+            "memberCount": 124,
             "isPrivate": false
         },
         {
             "id": "help",
             "name": "Help & Support",
-            "description": "Get help with coding problems",
+            "description": "Get help with coding problems, debugging, and technical challenges.",
             "icon": "fas fa-question-circle",
+            "topic": "Programming help and technical support",
             "createdAt": "2024-01-01T00:00:00Z",
+            "createdBy": "system",
+            "memberCount": 67,
             "isPrivate": false
         },
         {
             "id": "javascript",
             "name": "JavaScript Masters",
-            "description": "Deep dive into JavaScript",
+            "description": "Deep dive into JavaScript, frameworks, and modern web development.",
             "icon": "fab fa-js",
+            "topic": "JavaScript, React, Vue, Node.js discussions",
             "createdAt": "2024-01-01T00:00:00Z",
+            "createdBy": "system",
+            "memberCount": 234,
             "isPrivate": false
         },
         {
             "id": "python",
             "name": "Python Developers",
-            "description": "Python programming discussions",
+            "description": "Python programming, data science, AI/ML, and Django discussions.",
             "icon": "fab fa-python",
+            "topic": "Python, Django, Flask, Data Science",
             "createdAt": "2024-01-01T00:00:00Z",
+            "createdBy": "system",
+            "memberCount": 178,
+            "isPrivate": false
+        },
+        {
+            "id": "mobile",
+            "name": "Mobile Dev Hub",
+            "description": "iOS, Android, React Native, Flutter - cross-platform mobile development.",
+            "icon": "fas fa-mobile-alt",
+            "topic": "Mobile app development discussions",
+            "createdAt": "2024-01-01T00:00:00Z",
+            "createdBy": "system",
+            "memberCount": 92,
+            "isPrivate": false
+        },
+        {
+            "id": "cloud",
+            "name": "Cloud & DevOps",
+            "description": "AWS, Azure, GCP, Docker, Kubernetes, and DevOps practices.",
+            "icon": "fas fa-cloud",
+            "topic": "Cloud computing and DevOps",
+            "createdAt": "2024-01-01T00:00:00Z",
+            "createdBy": "system",
+            "memberCount": 145,
             "isPrivate": false
         }
     ],
     "messages": {
         "general": [
             {
-                "id": "msg1",
+                "id": "msg_1",
                 "senderId": "system",
                 "senderName": "System",
                 "senderAvatar": "🤖",
-                "text": "Welcome to Developer Chat! Feel free to ask questions and share knowledge.",
+                "senderRole": "admin",
+                "text": "🎉 **Welcome to Developer Chat!** 🎉\n\nThis is a space for developers to connect, share knowledge, and collaborate.\n\n**Rules:**\n• Be respectful to everyone\n• No spam or self-promotion\n• Help others when you can\n• Have fun coding!\n\nType **/help** to see available commands.",
                 "timestamp": "2024-01-01T00:00:00Z",
                 "type": "system",
                 "reactions": [],
-                "isPinned": false
+                "isPinned": true,
+                "attachments": []
             }
         ],
         "tech": [],
         "projects": [],
         "help": [],
         "javascript": [],
-        "python": []
-    },
-    "users": {
-        "online": [],
-        "typing": {}
+        "python": [],
+        "mobile": [],
+        "cloud": []
     },
     "settings": {
-        "maxMessageLength": 500,
+        "maxMessageLength": 2000,
         "messageCooldown": 2,
-        "allowedFileTypes": ["image/png", "image/jpeg", "image/gif"],
-        "maxFileSize": 5242880
-    }
+        "typingTimeout": 3000,
+        "allowedFileTypes": ["image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml"],
+        "maxFileSize": 5242880,
+        "enableNotifications": true,
+        "enableSound": true,
+        "enableEmoji": true,
+        "enableCodeBlocks": true,
+        "enableMentions": true
+    },
+    "commands": [
+        {
+            "command": "/help",
+            "description": "Show all available commands"
+        },
+        {
+            "command": "/clear",
+            "description": "Clear chat history"
+        },
+        {
+            "command": "/users",
+            "description": "Show online users"
+        },
+        {
+            "command": "/me",
+            "description": "Show your profile info"
+        },
+        {
+            "command": "/room",
+            "description": "Show current room info"
+        }
+    ]
 }
