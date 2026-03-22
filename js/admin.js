@@ -1,12 +1,11 @@
 /**
  * Admin Panel - Complete Management System
- * Manages platforms.json and projects.json
  */
 
 // Admin credentials
 const ADMIN_CREDENTIALS = {
     username: 'admin',
-    password: 'admin0000'
+    passwordHash: btoa('admin0000')
 };
 
 let isAdminLoggedIn = false;
@@ -19,9 +18,10 @@ let currentJsonTab = 'platforms';
 // ==================== INITIALIZATION ====================
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadStats();
+    console.log('🚀 Admin panel loading...');
     setupLoginForm();
-    loadJsonData();
+    loadStats();
+    updateSystemInfo();
 });
 
 function setupLoginForm() {
@@ -32,15 +32,15 @@ function setupLoginForm() {
             const username = document.getElementById('adminUsername').value;
             const password = document.getElementById('adminPassword').value;
             
-            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+            if (username === ADMIN_CREDENTIALS.username && btoa(password) === ADMIN_CREDENTIALS.passwordHash) {
                 isAdminLoggedIn = true;
                 document.getElementById('adminLoginCard').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
-                showToast('Admin login successful!', 'success');
+                showToast('Login successful!', 'success');
                 loadAllData();
-                updateSystemInfo();
             } else {
-                showToast('Invalid admin credentials!', 'error');
+                showToast('Invalid credentials!', 'error');
+                document.getElementById('adminPassword').value = '';
             }
         });
     }
@@ -56,98 +56,112 @@ function logoutAdmin() {
 // ==================== LOAD DATA ====================
 
 async function loadAllData() {
+    console.log('📁 Loading data...');
     await loadPlatformsData();
     await loadProjectsData();
     updateStats();
     renderPlatformsList();
     renderProjectsList();
     updateJsonEditor();
+    updateSystemInfo();
 }
 
 async function loadPlatformsData() {
     try {
-        const response = await fetch('../data/platforms.json');
-        if (response.ok) {
+        // Try multiple paths
+        let response = null;
+        const paths = [
+            '../data/platforms.json',
+            './data/platforms.json',
+            'data/platforms.json',
+            '/data/platforms.json'
+        ];
+        
+        for (const path of paths) {
+            console.log(`Trying to load platforms from: ${path}`);
+            const res = await fetch(path);
+            if (res.ok) {
+                response = res;
+                console.log(`✅ Loaded platforms from: ${path}`);
+                break;
+            }
+        }
+        
+        if (response) {
             const data = await response.json();
-            platformsData = data.platforms || [];
-        } else {
-            // Try to load from localStorage
-            const saved = localStorage.getItem('platformsData');
-            if (saved) {
-                platformsData = JSON.parse(saved);
+            if (data.platforms && Array.isArray(data.platforms)) {
+                platformsData = data.platforms;
+            } else if (Array.isArray(data)) {
+                platformsData = data;
             } else {
                 platformsData = [];
             }
+            console.log(`✅ Loaded ${platformsData.length} platforms`);
+        } else {
+            // Try localStorage fallback
+            const saved = localStorage.getItem('platformsData');
+            if (saved) {
+                platformsData = JSON.parse(saved);
+                console.log(`📦 Loaded ${platformsData.length} platforms from localStorage`);
+            } else {
+                platformsData = [];
+                console.log('⚠️ No platforms data found');
+            }
         }
     } catch (error) {
-        console.error('Error loading platforms:', error);
-        platformsData = [];
+        console.error('❌ Error loading platforms:', error);
+        const saved = localStorage.getItem('platformsData');
+        platformsData = saved ? JSON.parse(saved) : [];
     }
 }
 
 async function loadProjectsData() {
     try {
-        const response = await fetch('../data/projects.json');
-        if (response.ok) {
-            const data = await response.json();
-            projectsData = data.projects || data;
-            if (!Array.isArray(projectsData)) {
-                projectsData = [];
+        // Try multiple paths
+        let response = null;
+        const paths = [
+            '../data/projects.json',
+            './data/projects.json',
+            'data/projects.json',
+            '/data/projects.json'
+        ];
+        
+        for (const path of paths) {
+            console.log(`Trying to load projects from: ${path}`);
+            const res = await fetch(path);
+            if (res.ok) {
+                response = res;
+                console.log(`✅ Loaded projects from: ${path}`);
+                break;
             }
-        } else {
-            const saved = localStorage.getItem('projectsData');
-            if (saved) {
-                projectsData = JSON.parse(saved);
+        }
+        
+        if (response) {
+            const data = await response.json();
+            if (data.projects && Array.isArray(data.projects)) {
+                projectsData = data.projects;
+            } else if (Array.isArray(data)) {
+                projectsData = data;
             } else {
                 projectsData = [];
             }
+            console.log(`✅ Loaded ${projectsData.length} projects`);
+        } else {
+            // Try localStorage fallback
+            const saved = localStorage.getItem('projectsData');
+            if (saved) {
+                projectsData = JSON.parse(saved);
+                console.log(`📦 Loaded ${projectsData.length} projects from localStorage`);
+            } else {
+                projectsData = [];
+                console.log('⚠️ No projects data found');
+            }
         }
     } catch (error) {
-        console.error('Error loading projects:', error);
-        projectsData = [];
+        console.error('❌ Error loading projects:', error);
+        const saved = localStorage.getItem('projectsData');
+        projectsData = saved ? JSON.parse(saved) : [];
     }
-}
-
-async function loadJsonData() {
-    await loadPlatformsData();
-    await loadProjectsData();
-    updateJsonEditor();
-}
-
-// ==================== SAVE DATA ====================
-
-async function savePlatformsToFile() {
-    const data = { platforms: platformsData, version: '3.0', lastUpdated: new Date().toISOString() };
-    
-    // Save to localStorage
-    localStorage.setItem('platformsData', JSON.stringify(platformsData));
-    
-    // For demo, show download option
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'platforms.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    
-    showToast('Platforms saved! Download the file and replace in data folder', 'success');
-}
-
-async function saveProjectsToFile() {
-    const data = { projects: projectsData, version: '3.0', lastUpdated: new Date().toISOString() };
-    
-    localStorage.setItem('projectsData', JSON.stringify(projectsData));
-    
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'projects.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    
-    showToast('Projects saved! Download the file and replace in data folder', 'success');
 }
 
 // ==================== RENDER PLATFORMS ====================
@@ -156,34 +170,43 @@ function renderPlatformsList() {
     const container = document.getElementById('platformsList');
     if (!container) return;
     
-    let filtered = [...platformsData];
+    console.log(`Rendering ${platformsData.length} platforms`);
     
-    // Apply search filter
+    if (platformsData.length === 0) {
+        container.innerHTML = `
+            <div class="empty-message">
+                <i class="fas fa-database"></i>
+                <p>No platforms found. Click "Add Platform" to create one.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let filtered = [...platformsData];
     const searchTerm = document.getElementById('platformSearch')?.value.toLowerCase() || '';
     if (searchTerm) {
         filtered = filtered.filter(p => 
-            p.name.toLowerCase().includes(searchTerm) ||
-            p.description.toLowerCase().includes(searchTerm)
+            p.name?.toLowerCase().includes(searchTerm) ||
+            p.description?.toLowerCase().includes(searchTerm)
         );
     }
     
-    // Apply category filter
     const categoryFilter = document.getElementById('platformCategoryFilter')?.value || 'all';
     if (categoryFilter !== 'all') {
         filtered = filtered.filter(p => p.category === categoryFilter);
     }
     
     if (filtered.length === 0) {
-        container.innerHTML = '<div class="empty-message"><p>No platforms found</p></div>';
+        container.innerHTML = '<div class="empty-message">No platforms match your search</div>';
         return;
     }
     
     container.innerHTML = filtered.map(platform => `
         <div class="admin-item">
             <div class="admin-item-info">
-                <strong><i class="${platform.icon}"></i> ${escapeHtml(platform.name)}</strong>
-                <p>${escapeHtml(platform.description.substring(0, 100))}...</p>
-                <small>Category: ${platform.category} | Users: ${platform.users} | Rating: ${platform.rating}</small>
+                <strong><i class="${platform.icon || 'fas fa-cube'}"></i> ${escapeHtml(platform.name || 'Unknown')}</strong>
+                <p>${escapeHtml((platform.description || 'No description').substring(0, 100))}...</p>
+                <small>Category: ${getCategoryName(platform.category)} | Users: ${platform.users || 'N/A'} | ⭐ ${platform.rating || 'N/A'}</small>
             </div>
             <div class="admin-item-actions">
                 <button class="btn-small btn-edit" onclick="editPlatform(${platform.id})">
@@ -197,17 +220,30 @@ function renderPlatformsList() {
     `).join('');
 }
 
+// ==================== RENDER PROJECTS ====================
+
 function renderProjectsList() {
     const container = document.getElementById('projectsList');
     if (!container) return;
     
-    let filtered = [...projectsData];
+    console.log(`Rendering ${projectsData.length} projects`);
     
+    if (projectsData.length === 0) {
+        container.innerHTML = `
+            <div class="empty-message">
+                <i class="fas fa-database"></i>
+                <p>No projects found. Click "Add Project" to create one.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let filtered = [...projectsData];
     const searchTerm = document.getElementById('projectSearch')?.value.toLowerCase() || '';
     if (searchTerm) {
         filtered = filtered.filter(p => 
-            p.name.toLowerCase().includes(searchTerm) ||
-            p.description.toLowerCase().includes(searchTerm)
+            p.name?.toLowerCase().includes(searchTerm) ||
+            p.description?.toLowerCase().includes(searchTerm)
         );
     }
     
@@ -217,16 +253,16 @@ function renderProjectsList() {
     }
     
     if (filtered.length === 0) {
-        container.innerHTML = '<div class="empty-message"><p>No projects found</p></div>';
+        container.innerHTML = '<div class="empty-message">No projects match your search</div>';
         return;
     }
     
     container.innerHTML = filtered.map(project => `
         <div class="admin-item">
             <div class="admin-item-info">
-                <strong>${escapeHtml(project.name)}</strong>
-                <p>${escapeHtml(project.description.substring(0, 100))}...</p>
-                <small>Category: ${project.category} | Tech: ${project.tech} | Stars: ${project.stars}</small>
+                <strong><i class="${project.icon || 'fas fa-code'}"></i> ${escapeHtml(project.name || 'Unknown')}</strong>
+                <p>${escapeHtml((project.description || 'No description').substring(0, 100))}...</p>
+                <small>Category: ${getProjectCategoryName(project.category)} | Tech: ${(project.technologies || []).join(', ') || 'N/A'} | ⭐ ${project.stars || 0} stars</small>
             </div>
             <div class="admin-item-actions">
                 <button class="btn-small btn-edit" onclick="editProject(${project.id})">
@@ -246,31 +282,29 @@ function openPlatformModal(platformId = null) {
     currentEditPlatformId = platformId;
     const modal = document.getElementById('platformModal');
     const title = document.getElementById('platformModalTitle');
-    const form = document.getElementById('platformForm');
-    
-    form.reset();
     
     if (platformId) {
         const platform = platformsData.find(p => p.id === platformId);
         if (platform) {
             title.innerHTML = '<i class="fas fa-edit"></i> Edit Platform';
-            document.getElementById('platformName').value = platform.name;
-            document.getElementById('platformCategory').value = platform.category;
+            document.getElementById('platformName').value = platform.name || '';
+            document.getElementById('platformCategory').value = platform.category || 'ai';
             document.getElementById('platformShortDesc').value = platform.shortDesc || '';
-            document.getElementById('platformDescription').value = platform.description;
-            document.getElementById('platformIcon').value = platform.icon;
-            document.getElementById('platformWebsite').value = platform.website;
+            document.getElementById('platformDescription').value = platform.description || '';
+            document.getElementById('platformIcon').value = platform.icon || 'fas fa-cube';
+            document.getElementById('platformWebsite').value = platform.website || '';
             document.getElementById('platformDocs').value = platform.docs || '';
-            document.getElementById('platformUsers').value = platform.users;
-            document.getElementById('platformRating').value = platform.rating;
+            document.getElementById('platformUsers').value = platform.users || '';
+            document.getElementById('platformRating').value = platform.rating || 4.5;
             document.getElementById('platformFounded').value = platform.founded || '';
             document.getElementById('platformTags').value = (platform.tags || []).join(', ');
             document.getElementById('platformFeatured').checked = platform.featured || false;
         }
     } else {
-        title.innerHTML = '<i class="fas fa-plus"></i> Add New Platform';
-        document.getElementById('platformName').value = '';
+        title.innerHTML = '<i class="fas fa-plus"></i> Add Platform';
+        document.getElementById('platformForm').reset();
         document.getElementById('platformRating').value = '4.5';
+        document.getElementById('platformIcon').value = 'fas fa-cube';
     }
     
     modal.style.display = 'flex';
@@ -298,9 +332,7 @@ function savePlatform(event) {
     
     if (currentEditPlatformId) {
         const index = platformsData.findIndex(p => p.id === currentEditPlatformId);
-        if (index !== -1) {
-            platformsData[index] = platform;
-        }
+        if (index !== -1) platformsData[index] = platform;
     } else {
         platformsData.push(platform);
     }
@@ -339,20 +371,26 @@ function openProjectModal(projectId = null) {
         const project = projectsData.find(p => p.id === projectId);
         if (project) {
             title.innerHTML = '<i class="fas fa-edit"></i> Edit Project';
-            document.getElementById('projectName').value = project.name;
-            document.getElementById('projectCategory').value = project.category;
-            document.getElementById('projectDescription').value = project.description;
-            document.getElementById('projectTech').value = project.tech;
-            document.getElementById('projectUrl').value = project.url || project.demo || '';
-            document.getElementById('projectDemo').value = project.demo || '';
+            document.getElementById('projectName').value = project.name || '';
+            document.getElementById('projectShortDesc').value = project.shortDesc || '';
+            document.getElementById('projectDescription').value = project.description || '';
+            document.getElementById('projectFullDescription').value = project.fullDescription || '';
+            document.getElementById('projectCategory').value = project.category || 'web';
+            document.getElementById('projectIcon').value = project.icon || 'fas fa-code';
+            document.getElementById('projectTechnologies').value = (project.technologies || []).join(', ');
+            document.getElementById('projectGithubUrl').value = project.githubUrl || '';
+            document.getElementById('projectLiveUrl').value = project.liveUrl || '';
             document.getElementById('projectStars').value = project.stars || 0;
             document.getElementById('projectForks').value = project.forks || 0;
+            document.getElementById('projectLicense').value = project.license || '';
+            document.getElementById('projectFeatured').checked = project.featured || false;
         }
     } else {
-        title.innerHTML = '<i class="fas fa-plus"></i> Add New Project';
+        title.innerHTML = '<i class="fas fa-plus"></i> Add Project';
         document.getElementById('projectForm').reset();
         document.getElementById('projectStars').value = 0;
         document.getElementById('projectForks').value = 0;
+        document.getElementById('projectIcon').value = 'fas fa-code';
     }
     
     modal.style.display = 'flex';
@@ -364,20 +402,26 @@ function saveProject(event) {
     const project = {
         id: currentEditProjectId || Date.now(),
         name: document.getElementById('projectName').value,
-        category: document.getElementById('projectCategory').value,
+        shortDesc: document.getElementById('projectShortDesc').value,
         description: document.getElementById('projectDescription').value,
-        tech: document.getElementById('projectTech').value,
-        url: document.getElementById('projectUrl').value,
-        demo: document.getElementById('projectDemo').value,
+        fullDescription: document.getElementById('projectFullDescription').value,
+        icon: document.getElementById('projectIcon').value,
+        category: document.getElementById('projectCategory').value,
+        categoryName: getProjectCategoryName(document.getElementById('projectCategory').value),
+        technologies: document.getElementById('projectTechnologies').value.split(',').map(t => t.trim()).filter(t => t),
+        githubUrl: document.getElementById('projectGithubUrl').value,
+        liveUrl: document.getElementById('projectLiveUrl').value,
         stars: parseInt(document.getElementById('projectStars').value) || 0,
-        forks: parseInt(document.getElementById('projectForks').value) || 0
+        forks: parseInt(document.getElementById('projectForks').value) || 0,
+        license: document.getElementById('projectLicense').value,
+        featured: document.getElementById('projectFeatured').checked,
+        createdAt: new Date().toISOString().split('T')[0],
+        updatedAt: new Date().toISOString().split('T')[0]
     };
     
     if (currentEditProjectId) {
         const index = projectsData.findIndex(p => p.id === currentEditProjectId);
-        if (index !== -1) {
-            projectsData[index] = project;
-        }
+        if (index !== -1) projectsData[index] = { ...projectsData[index], ...project };
     } else {
         projectsData.push(project);
     }
@@ -405,6 +449,50 @@ function deleteProject(id) {
     }
 }
 
+// ==================== SAVE TO FILES ====================
+
+function savePlatformsToFile() {
+    const data = { 
+        platforms: platformsData, 
+        version: '3.0', 
+        lastUpdated: new Date().toISOString(),
+        totalPlatforms: platformsData.length
+    };
+    localStorage.setItem('platformsData', JSON.stringify(platformsData));
+    
+    // Create download
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'platforms.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    console.log('💾 Platforms saved to file');
+}
+
+function saveProjectsToFile() {
+    const data = { 
+        projects: projectsData, 
+        version: '3.0', 
+        lastUpdated: new Date().toISOString(),
+        totalProjects: projectsData.length
+    };
+    localStorage.setItem('projectsData', JSON.stringify(projectsData));
+    
+    // Create download
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'projects.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    console.log('💾 Projects saved to file');
+}
+
 // ==================== JSON EDITOR ====================
 
 function updateJsonEditor() {
@@ -412,46 +500,50 @@ function updateJsonEditor() {
     if (!editor) return;
     
     if (currentJsonTab === 'platforms') {
-        editor.value = JSON.stringify({ platforms: platformsData }, null, 2);
+        const data = { 
+            platforms: platformsData, 
+            version: '3.0', 
+            lastUpdated: new Date().toISOString(),
+            totalPlatforms: platformsData.length
+        };
+        editor.value = JSON.stringify(data, null, 2);
     } else {
-        editor.value = JSON.stringify({ projects: projectsData }, null, 2);
+        const data = { 
+            projects: projectsData, 
+            version: '3.0', 
+            lastUpdated: new Date().toISOString(),
+            totalProjects: projectsData.length
+        };
+        editor.value = JSON.stringify(data, null, 2);
     }
 }
 
 function switchJsonTab(tab) {
     currentJsonTab = tab;
-    
-    document.querySelectorAll('.json-tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-    
+    document.querySelectorAll('.json-tab-btn').forEach(btn => btn.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
     updateJsonEditor();
 }
 
 function saveJsonToFile() {
     const editor = document.getElementById('jsonEditor');
-    let data;
-    
     try {
-        data = JSON.parse(editor.value);
+        const data = JSON.parse(editor.value);
+        if (currentJsonTab === 'platforms') {
+            platformsData = data.platforms || [];
+            savePlatformsToFile();
+            renderPlatformsList();
+        } else {
+            projectsData = data.projects || [];
+            saveProjectsToFile();
+            renderProjectsList();
+        }
+        updateStats();
+        updateJsonEditor();
+        showToast('JSON saved successfully!', 'success');
     } catch (e) {
         showToast('Invalid JSON format!', 'error');
-        return;
     }
-    
-    if (currentJsonTab === 'platforms') {
-        platformsData = data.platforms || data;
-        savePlatformsToFile();
-    } else {
-        projectsData = data.projects || data;
-        saveProjectsToFile();
-    }
-    
-    renderPlatformsList();
-    renderProjectsList();
-    updateStats();
-    showToast('JSON saved successfully!', 'success');
 }
 
 function formatJson() {
@@ -461,94 +553,23 @@ function formatJson() {
         editor.value = JSON.stringify(data, null, 2);
         showToast('JSON formatted!', 'success');
     } catch (e) {
-        showToast('Invalid JSON format!', 'error');
+        showToast('Invalid JSON!', 'error');
     }
 }
 
 function resetJson() {
-    if (confirm('Reset to current data?')) {
-        updateJsonEditor();
-        showToast('Reset to saved data', 'info');
-    }
+    updateJsonEditor();
+    showToast('Reset to current data', 'info');
 }
 
-// ==================== UTILITIES ====================
+// ==================== DATA MANAGEMENT ====================
 
-function getCategoryName(category) {
-    const names = {
-        ai: 'AI & Machine Learning',
-        coding: 'Coding & Programming',
-        mobile: 'Mobile Development',
-        cloud: 'Cloud Storage & Hosting',
-        database: 'Database Platforms',
-        language: 'Programming Languages'
-    };
-    return names[category] || category;
-}
-
-function updateStats() {
-    document.getElementById('totalPlatforms').textContent = platformsData.length;
-    document.getElementById('totalProjects').textContent = projectsData.length;
-    document.getElementById('activeUsers').textContent = Math.floor(Math.random() * 1000) + 500;
-    document.getElementById('totalViews').textContent = Math.floor(Math.random() * 50000) + 10000;
-}
-
-function updateSystemInfo() {
-    document.getElementById('infoPlatformsCount').textContent = platformsData.length;
-    document.getElementById('infoProjectsCount').textContent = projectsData.length;
-    document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
-}
-
-function loadStats() {
-    // Load analytics from localStorage
-    const analytics = JSON.parse(localStorage.getItem('platform_analytics') || '[]');
-    const totalViews = analytics.filter(a => a.event === 'platform_click').length;
-    document.getElementById('totalViews').textContent = totalViews || Math.floor(Math.random() * 50000) + 10000;
-}
-
-function showSection(section) {
-    // Scroll to section
-    document.getElementById(`${section}Tab`).scrollIntoView({ behavior: 'smooth' });
-}
-
-function showTab(tab) {
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-    
-    document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-    });
-    
-    document.getElementById(`${tab}Tab`).classList.add('active');
-    
-    if (tab === 'json-editor') {
-        updateJsonEditor();
-    }
-}
-
-function searchPlatforms() {
-    renderPlatformsList();
-}
-
-function filterPlatformsByCategory() {
-    renderPlatformsList();
-}
-
-function searchProjects() {
-    renderProjectsList();
-}
-
-function filterProjectsByCategory() {
-    renderProjectsList();
-}
-
-function exportData() {
+function exportAllData() {
     const data = {
         platforms: platformsData,
         projects: projectsData,
-        exportDate: new Date().toISOString()
+        exportDate: new Date().toISOString(),
+        version: '3.0'
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -560,7 +581,7 @@ function exportData() {
     showToast('Data exported!', 'success');
 }
 
-function importData() {
+function importAllData() {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.json';
@@ -580,7 +601,7 @@ function importData() {
                 updateJsonEditor();
                 showToast('Data imported!', 'success');
             } catch (err) {
-                showToast('Invalid file format!', 'error');
+                showToast('Invalid file!', 'error');
             }
         };
         reader.readAsText(file);
@@ -589,15 +610,15 @@ function importData() {
 }
 
 function backupData() {
-    exportData();
+    exportAllData();
 }
 
 function restoreBackup() {
-    importData();
+    importAllData();
 }
 
 function clearAllData() {
-    if (confirm('WARNING: This will delete all platforms and projects! Are you sure?')) {
+    if (confirm('WARNING: This will delete ALL platforms and projects! Are you sure?')) {
         platformsData = [];
         projectsData = [];
         savePlatformsToFile();
@@ -624,12 +645,69 @@ function changeAdminPassword() {
         return;
     }
     
-    // In a real app, you'd save this securely
-    ADMIN_CREDENTIALS.password = newPass;
-    showToast('Password updated! (Demo only - not persistent)', 'success');
-    
+    ADMIN_CREDENTIALS.passwordHash = btoa(newPass);
+    showToast('Password updated!', 'success');
     document.getElementById('newPassword').value = '';
     document.getElementById('confirmPassword').value = '';
+}
+
+// ==================== UTILITIES ====================
+
+function updateStats() {
+    document.getElementById('totalPlatforms').textContent = platformsData.length;
+    document.getElementById('totalProjects').textContent = projectsData.length;
+    document.getElementById('totalUsers').textContent = Math.floor(Math.random() * 500) + 100;
+    document.getElementById('totalViews').textContent = Math.floor(Math.random() * 50000) + 5000;
+    document.getElementById('infoPlatformsCount').textContent = platformsData.length;
+    document.getElementById('infoProjectsCount').textContent = projectsData.length;
+    document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+}
+
+function updateSystemInfo() {
+    document.getElementById('systemVersion').textContent = '3.0.0';
+}
+
+function loadStats() {
+    const analytics = JSON.parse(localStorage.getItem('platform_analytics') || '[]');
+    const totalViews = analytics.filter(a => a.event === 'platform_click').length;
+    document.getElementById('totalViews').textContent = totalViews || Math.floor(Math.random() * 50000) + 5000;
+}
+
+function showTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    document.getElementById(`${tab}Tab`).classList.add('active');
+    if (tab === 'json-editor') updateJsonEditor();
+}
+
+function searchPlatforms() { renderPlatformsList(); }
+function filterPlatformsByCategory() { renderPlatformsList(); }
+function searchProjects() { renderProjectsList(); }
+function filterProjectsByCategory() { renderProjectsList(); }
+
+function getCategoryName(category) {
+    const names = { 
+        ai: 'AI & ML', 
+        coding: 'Coding', 
+        mobile: 'Mobile', 
+        cloud: 'Cloud', 
+        database: 'Database', 
+        language: 'Languages' 
+    };
+    return names[category] || category;
+}
+
+function getProjectCategoryName(category) {
+    const names = { 
+        web: 'Web', 
+        mobile: 'Mobile', 
+        ai: 'AI/ML', 
+        game: 'Game', 
+        devops: 'DevOps', 
+        blockchain: 'Blockchain' 
+    };
+    return names[category] || category;
 }
 
 function escapeHtml(text) {
@@ -642,7 +720,7 @@ function escapeHtml(text) {
 function showToast(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
-    toast.innerHTML = message;
+    toast.textContent = message;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
 }
@@ -654,3 +732,28 @@ function closeModal(modalId) {
 // Setup form handlers
 document.getElementById('platformForm')?.addEventListener('submit', savePlatform);
 document.getElementById('projectForm')?.addEventListener('submit', saveProject);
+
+// Global functions
+window.showTab = showTab;
+window.openPlatformModal = openPlatformModal;
+window.openProjectModal = openProjectModal;
+window.editPlatform = editPlatform;
+window.editProject = editProject;
+window.deletePlatform = deletePlatform;
+window.deleteProject = deleteProject;
+window.searchPlatforms = searchPlatforms;
+window.filterPlatformsByCategory = filterPlatformsByCategory;
+window.searchProjects = searchProjects;
+window.filterProjectsByCategory = filterProjectsByCategory;
+window.switchJsonTab = switchJsonTab;
+window.saveJsonToFile = saveJsonToFile;
+window.formatJson = formatJson;
+window.resetJson = resetJson;
+window.exportAllData = exportAllData;
+window.importAllData = importAllData;
+window.backupData = backupData;
+window.restoreBackup = restoreBackup;
+window.clearAllData = clearAllData;
+window.changeAdminPassword = changeAdminPassword;
+window.logoutAdmin = logoutAdmin;
+window.closeModal = closeModal;
