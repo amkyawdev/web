@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projects - Aung Myo Kyaw</title>
+    <title>Projects - Aung Myo Kyaw Developer Projects</title>
     <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/main.css">
@@ -38,26 +38,109 @@
             <li class="auth-link-item register-link"><a href="../auth/register.html"><i class="fas fa-user-plus"></i> Register</a></li>
             <li class="auth-link-item logout-link" style="display: none;"><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
-        <div id="userInfo" style="margin-top: auto; padding-top: 20px;"></div>
+        <div id="userInfo"></div>
     </div>
     
     <div class="menu-overlay" id="menuOverlay"></div>
     
     <div class="main-content">
         <div class="container">
-            <h1 class="page-title">Featured Projects</h1>
-            <p class="page-subtitle">Explore amazing projects built by our community</p>
-            
-            <div class="projects-filter">
-                <button class="filter-btn active" onclick="filterProjects('all')">All</button>
-                <button class="filter-btn" onclick="filterProjects('Web')">Web</button>
-                <button class="filter-btn" onclick="filterProjects('Mobile')">Mobile</button>
-                <button class="filter-btn" onclick="filterProjects('AI')">AI/ML</button>
-                <button class="filter-btn" onclick="filterProjects('Game')">Game</button>
+            <div class="projects-header">
+                <h1 class="page-title">
+                    <i class="fas fa-project-diagram"></i>
+                    Featured Projects
+                </h1>
+                <p class="page-subtitle">
+                    Explore amazing open-source projects built by our community
+                </p>
             </div>
             
-            <div class="projects-grid" id="projectsGrid">
-                <!-- Projects will be loaded here -->
+            <!-- Search Bar -->
+            <div class="search-section">
+                <div class="search-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="projectSearch" placeholder="Search projects by name, technology, or tags..." class="search-input">
+                    <button class="search-clear" id="clearSearch" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Category Filters -->
+            <div class="category-filters">
+                <button class="category-btn active" data-category="all" onclick="filterProjects('all')">
+                    <i class="fas fa-th-large"></i> All
+                    <span class="filter-count" id="count-all">0</span>
+                </button>
+                <button class="category-btn" data-category="web" onclick="filterProjects('web')">
+                    <i class="fas fa-globe"></i> Web
+                    <span class="filter-count" id="count-web">0</span>
+                </button>
+                <button class="category-btn" data-category="mobile" onclick="filterProjects('mobile')">
+                    <i class="fas fa-mobile-alt"></i> Mobile
+                    <span class="filter-count" id="count-mobile">0</span>
+                </button>
+                <button class="category-btn" data-category="ai" onclick="filterProjects('ai')">
+                    <i class="fas fa-brain"></i> AI/ML
+                    <span class="filter-count" id="count-ai">0</span>
+                </button>
+                <button class="category-btn" data-category="game" onclick="filterProjects('game')">
+                    <i class="fas fa-gamepad"></i> Game
+                    <span class="filter-count" id="count-game">0</span>
+                </button>
+                <button class="category-btn" data-category="devops" onclick="filterProjects('devops')">
+                    <i class="fas fa-code-branch"></i> DevOps
+                    <span class="filter-count" id="count-devops">0</span>
+                </button>
+                <button class="category-btn" data-category="blockchain" onclick="filterProjects('blockchain')">
+                    <i class="fab fa-bitcoin"></i> Blockchain
+                    <span class="filter-count" id="count-blockchain">0</span>
+                </button>
+            </div>
+            
+            <!-- Sort Options -->
+            <div class="sort-section">
+                <div class="results-info">
+                    <span id="resultsCount"></span>
+                    <div class="sort-options">
+                        <label>Sort by:</label>
+                        <select id="sortBy" onchange="sortProjects()">
+                            <option value="stars">⭐ Most Stars</option>
+                            <option value="recent">🕒 Most Recent</option>
+                            <option value="forks">🍴 Most Forks</option>
+                            <option value="name">📝 Name</option>
+                        </select>
+                        <div class="view-options">
+                            <button class="view-btn active" onclick="setView('grid')" title="Grid View">
+                                <i class="fas fa-th-large"></i>
+                            </button>
+                            <button class="view-btn" onclick="setView('list')" title="List View">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Projects Container -->
+            <div id="projectsContainer" class="projects-container grid-view">
+                <div class="loading-container">
+                    <div class="loader"></div>
+                    <p>Loading projects from GitHub...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Project Detail Modal -->
+    <div id="projectModal" class="modal" style="display: none;">
+        <div class="modal-content project-modal">
+            <div class="modal-header">
+                <h3 id="modalProjectTitle"></h3>
+                <button class="close-modal" onclick="closeModal('projectModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="modalProjectBody">
+                <!-- Dynamic content -->
             </div>
         </div>
     </div>
@@ -67,5 +150,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="../js/main.js"></script>
     <script src="../js/projects.js"></script>
+    <script src="../data/projects.json"></script>
 </body>
 </html>

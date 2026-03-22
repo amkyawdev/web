@@ -38,7 +38,7 @@
             <li class="auth-link-item register-link"><a href="../auth/register.html"><i class="fas fa-user-plus"></i> Register</a></li>
             <li class="auth-link-item logout-link" style="display: none;"><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
-        <div id="userInfo" style="margin-top: auto; padding-top: 20px;"></div>
+        <div id="userInfo"></div>
     </div>
     
     <div class="menu-overlay" id="menuOverlay"></div>
@@ -50,7 +50,7 @@
                 <div class="admin-logo">
                     <i class="fas fa-user-shield"></i>
                     <h2>Admin Access</h2>
-                    <p>Enter credentials to access admin panel</p>
+                    <p>Enter your credentials to access the admin panel</p>
                 </div>
                 <form id="adminLoginForm">
                     <div class="form-group">
@@ -62,12 +62,9 @@
                         <input type="password" id="adminPassword" required placeholder="Enter password">
                     </div>
                     <button type="submit" class="btn auth-btn">
-                        <i class="fas fa-sign-in-alt"></i> Login as Admin
+                        <i class="fas fa-sign-in-alt"></i> Login
                     </button>
                 </form>
-                <div class="admin-info">
-                    <small>Demo: admin-name / admin-password </small>
-                </div>
             </div>
             
             <!-- Admin Panel -->
@@ -75,11 +72,11 @@
                 <div class="admin-header">
                     <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
                     <div class="admin-actions-top">
-                        <button class="btn btn-outline" onclick="exportData()">
-                            <i class="fas fa-download"></i> Export JSON
+                        <button class="btn btn-outline" onclick="exportAllData()">
+                            <i class="fas fa-download"></i> Export All
                         </button>
-                        <button class="btn btn-outline" onclick="importData()">
-                            <i class="fas fa-upload"></i> Import JSON
+                        <button class="btn btn-outline" onclick="importAllData()">
+                            <i class="fas fa-upload"></i> Import
                         </button>
                         <button class="btn btn-danger" onclick="logoutAdmin()">
                             <i class="fas fa-sign-out-alt"></i> Logout
@@ -89,25 +86,25 @@
                 
                 <!-- Stats Cards -->
                 <div class="admin-stats">
-                    <div class="stat-card" onclick="showSection('platforms')">
+                    <div class="stat-card" onclick="showTab('platforms')">
                         <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
                         <div class="stat-info">
-                            <h3>Total Platforms</h3>
+                            <h3>Platforms</h3>
                             <div class="stat-number" id="totalPlatforms">0</div>
                         </div>
                     </div>
-                    <div class="stat-card" onclick="showSection('projects')">
+                    <div class="stat-card" onclick="showTab('projects')">
                         <div class="stat-icon"><i class="fas fa-project-diagram"></i></div>
                         <div class="stat-info">
-                            <h3>Total Projects</h3>
+                            <h3>Projects</h3>
                             <div class="stat-number" id="totalProjects">0</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-users"></i></div>
                         <div class="stat-info">
-                            <h3>Active Users</h3>
-                            <div class="stat-number" id="activeUsers">0</div>
+                            <h3>Users</h3>
+                            <div class="stat-number" id="totalUsers">0</div>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -140,7 +137,7 @@
                     <div class="admin-section-header">
                         <h3><i class="fas fa-layer-group"></i> Manage Platforms</h3>
                         <button class="btn btn-primary" onclick="openPlatformModal()">
-                            <i class="fas fa-plus"></i> Add New Platform
+                            <i class="fas fa-plus"></i> Add Platform
                         </button>
                     </div>
                     <div class="admin-search">
@@ -163,17 +160,19 @@
                     <div class="admin-section-header">
                         <h3><i class="fas fa-project-diagram"></i> Manage Projects</h3>
                         <button class="btn btn-primary" onclick="openProjectModal()">
-                            <i class="fas fa-plus"></i> Add New Project
+                            <i class="fas fa-plus"></i> Add Project
                         </button>
                     </div>
                     <div class="admin-search">
                         <input type="text" id="projectSearch" placeholder="Search projects..." onkeyup="searchProjects()">
                         <select id="projectCategoryFilter" onchange="filterProjectsByCategory()">
                             <option value="all">All Categories</option>
-                            <option value="Web">Web Development</option>
-                            <option value="Mobile">Mobile Apps</option>
-                            <option value="AI">AI/ML</option>
-                            <option value="Game">Game Dev</option>
+                            <option value="web">Web Development</option>
+                            <option value="mobile">Mobile Apps</option>
+                            <option value="ai">AI/ML</option>
+                            <option value="game">Game Dev</option>
+                            <option value="devops">DevOps</option>
+                            <option value="blockchain">Blockchain</option>
                         </select>
                     </div>
                     <div id="projectsList" class="admin-list"></div>
@@ -188,7 +187,7 @@
                                 <i class="fas fa-save"></i> Save to File
                             </button>
                             <button class="btn btn-warning" onclick="formatJson()">
-                                <i class="fas fa-magic"></i> Format JSON
+                                <i class="fas fa-magic"></i> Format
                             </button>
                             <button class="btn btn-danger" onclick="resetJson()">
                                 <i class="fas fa-undo"></i> Reset
@@ -204,7 +203,7 @@
                                 <i class="fas fa-project-diagram"></i> projects.json
                             </button>
                         </div>
-                        <textarea id="jsonEditor" class="json-editor" rows="20" placeholder="JSON data will appear here..."></textarea>
+                        <textarea id="jsonEditor" class="json-editor" rows="18" placeholder="JSON data will appear here..."></textarea>
                         <div class="json-status" id="jsonStatus"></div>
                     </div>
                 </div>
@@ -214,6 +213,7 @@
                     <div class="admin-section-header">
                         <h3><i class="fas fa-cog"></i> Admin Settings</h3>
                     </div>
+                    
                     <div class="settings-group">
                         <h4>Data Management</h4>
                         <div class="setting-item">
@@ -228,8 +228,9 @@
                             </button>
                         </div>
                     </div>
+                    
                     <div class="settings-group">
-                        <h4>Admin Credentials</h4>
+                        <h4>Security</h4>
                         <div class="setting-item">
                             <label>Change Password</label>
                             <input type="password" id="newPassword" placeholder="New password">
@@ -237,8 +238,9 @@
                             <button class="btn" onclick="changeAdminPassword()">Update Password</button>
                         </div>
                     </div>
+                    
                     <div class="settings-group">
-                        <h4>System Info</h4>
+                        <h4>System Information</h4>
                         <div class="info-grid">
                             <div class="info-item">
                                 <strong>Version:</strong> <span id="systemVersion">3.0.0</span>
@@ -263,8 +265,8 @@
     <div id="platformModal" class="modal" style="display: none;">
         <div class="modal-content modal-large">
             <div class="modal-header">
-                <h3 id="platformModalTitle"><i class="fas fa-plus"></i> Add New Platform</h3>
-                <span class="close" onclick="closeModal('platformModal')">&times;</span>
+                <h3 id="platformModalTitle"><i class="fas fa-plus"></i> Add Platform</h3>
+                <button class="close-modal" onclick="closeModal('platformModal')">&times;</button>
             </div>
             <form id="platformForm">
                 <div class="form-row">
@@ -286,7 +288,7 @@
                 </div>
                 <div class="form-group">
                     <label>Short Description</label>
-                    <input type="text" id="platformShortDesc" placeholder="e.g., GPT-4, DALL-E, API">
+                    <input type="text" id="platformShortDesc" placeholder="Brief tagline">
                 </div>
                 <div class="form-group">
                     <label>Full Description *</label>
@@ -296,7 +298,6 @@
                     <div class="form-group">
                         <label>Icon Class</label>
                         <input type="text" id="platformIcon" value="fas fa-cube">
-                        <small>Font Awesome icon class (e.g., fab fa-github)</small>
                     </div>
                     <div class="form-group">
                         <label>Website URL *</label>
@@ -344,8 +345,8 @@
     <div id="projectModal" class="modal" style="display: none;">
         <div class="modal-content modal-large">
             <div class="modal-header">
-                <h3 id="projectModalTitle"><i class="fas fa-plus"></i> Add New Project</h3>
-                <span class="close" onclick="closeModal('projectModal')">&times;</span>
+                <h3 id="projectModalTitle"><i class="fas fa-plus"></i> Add Project</h3>
+                <button class="close-modal" onclick="closeModal('projectModal')">&times;</button>
             </div>
             <form id="projectForm">
                 <div class="form-row">
@@ -356,29 +357,45 @@
                     <div class="form-group">
                         <label>Category *</label>
                         <select id="projectCategory" required>
-                            <option value="Web">Web Development</option>
-                            <option value="Mobile">Mobile Apps</option>
-                            <option value="AI">AI/ML</option>
-                            <option value="Game">Game Development</option>
+                            <option value="web">Web Development</option>
+                            <option value="mobile">Mobile Apps</option>
+                            <option value="ai">AI & Machine Learning</option>
+                            <option value="game">Game Development</option>
+                            <option value="devops">DevOps & Tools</option>
+                            <option value="blockchain">Blockchain & Web3</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Description *</label>
-                    <textarea id="projectDescription" rows="3" required></textarea>
+                    <label>Short Description</label>
+                    <input type="text" id="projectShortDesc" placeholder="Brief tagline">
                 </div>
                 <div class="form-group">
-                    <label>Tech Stack (comma separated)</label>
-                    <input type="text" id="projectTech" placeholder="e.g., React, Node.js, MongoDB">
+                    <label>Description *</label>
+                    <textarea id="projectDescription" rows="2" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Full Description</label>
+                    <textarea id="projectFullDescription" rows="4" placeholder="Detailed description with features..."></textarea>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>GitHub/Project URL</label>
-                        <input type="url" id="projectUrl" placeholder="https://github.com/...">
+                        <label>Icon Class</label>
+                        <input type="text" id="projectIcon" value="fas fa-code">
                     </div>
                     <div class="form-group">
-                        <label>Demo URL</label>
-                        <input type="url" id="projectDemo" placeholder="https://...">
+                        <label>Technologies (comma separated)</label>
+                        <input type="text" id="projectTechnologies" placeholder="React, Node.js, MongoDB">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>GitHub URL</label>
+                        <input type="url" id="projectGithubUrl" placeholder="https://github.com/username/repo">
+                    </div>
+                    <div class="form-group">
+                        <label>Live Demo URL</label>
+                        <input type="url" id="projectLiveUrl" placeholder="https://demo.example.com">
                     </div>
                 </div>
                 <div class="form-row">
@@ -389,6 +406,17 @@
                     <div class="form-group">
                         <label>Forks</label>
                         <input type="number" id="projectForks" value="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>License</label>
+                        <input type="text" id="projectLicense" placeholder="MIT, Apache-2.0, etc">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="projectFeatured"> Featured Project
+                        </label>
                     </div>
                 </div>
                 <div class="modal-footer">
