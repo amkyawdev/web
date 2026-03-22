@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Chat - Aung Myo Kyaw</title>
+    <title>Developer Chat - Aung Myo Kyaw</title>
     <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/main.css">
@@ -38,69 +38,69 @@
             <li class="auth-link-item register-link"><a href="../auth/register.html"><i class="fas fa-user-plus"></i> Register</a></li>
             <li class="auth-link-item logout-link" style="display: none;"><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
-        <div id="userInfo" style="margin-top: auto; padding-top: 20px;"></div>
+        <div id="userInfo"></div>
     </div>
     
     <div class="menu-overlay" id="menuOverlay"></div>
     
     <div class="main-content">
-        <div class="chat-container advanced-chat">
+        <div class="chat-container">
             <!-- Sidebar -->
             <div class="chat-sidebar">
-                <div class="user-profile-section">
-                    <div class="user-avatar" id="userAvatar">
-                        <i class="fas fa-user-circle"></i>
-                    </div>
+                <div class="user-card">
+                    <div class="user-avatar" id="userAvatar">👨‍💻</div>
                     <div class="user-info">
                         <h4 id="userName">Loading...</h4>
-                        <p id="userStatus">
-                            <i class="fas fa-circle online-dot"></i> Online
-                        </p>
+                        <span class="user-badge" id="userStatus">Online</span>
                     </div>
-                    <button class="edit-profile-btn" onclick="openProfileModal()">
+                    <button class="icon-btn" onclick="openProfileModal()">
                         <i class="fas fa-edit"></i>
                     </button>
                 </div>
                 
-                <div class="chat-rooms-section">
-                    <div class="section-header">
-                        <h3><i class="fas fa-hashtag"></i> Chat Rooms</h3>
+                <div class="sidebar-section">
+                    <div class="section-title">
+                        <i class="fas fa-hashtag"></i>
+                        <span>Chat Rooms</span>
                         <button class="icon-btn-sm" onclick="showCreateRoomModal()">
                             <i class="fas fa-plus"></i>
                         </button>
                     </div>
-                    <div class="room-list" id="roomList">
-                        <!-- Rooms will be loaded here -->
+                    <div class="room-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="roomSearch" placeholder="Search rooms...">
                     </div>
+                    <div class="rooms-list" id="roomsList"></div>
                 </div>
                 
-                <div class="online-users-section">
-                    <div class="section-header">
-                        <h3><i class="fas fa-users"></i> Online Users</h3>
-                        <span id="onlineCount" class="online-count">0</span>
+                <div class="sidebar-section">
+                    <div class="section-title">
+                        <i class="fas fa-users"></i>
+                        <span>Online</span>
+                        <span class="badge" id="onlineCount">0</span>
                     </div>
-                    <div class="users-list" id="onlineUsersList">
-                        <!-- Online users will be loaded here -->
-                    </div>
+                    <div class="users-list" id="onlineUsersList"></div>
                 </div>
             </div>
             
-            <!-- Main Chat Area -->
+            <!-- Chat Main -->
             <div class="chat-main">
                 <div class="chat-header">
-                    <div class="room-info">
-                        <i class="fas fa-hashtag" id="currentRoomIcon"></i>
-                        <h3 id="currentRoomName">General Discussion</h3>
-                        <p id="roomDescription">Welcome to general chat</p>
+                    <div class="room-header">
+                        <i class="fas fa-hashtag" id="roomIcon"></i>
+                        <div>
+                            <h2 id="roomName">General</h2>
+                            <p id="roomDesc">Welcome to general chat</p>
+                        </div>
                     </div>
-                    <div class="chat-actions">
-                        <button class="icon-btn" onclick="toggleSearch()" title="Search messages">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        <button class="icon-btn" onclick="toggleNotifications()" title="Notifications">
+                    <div class="header-actions">
+                        <button class="icon-btn" onclick="toggleNotifications()" id="notifBtn">
                             <i class="fas fa-bell"></i>
                         </button>
-                        <button class="icon-btn" onclick="showRoomInfo()" title="Room info">
+                        <button class="icon-btn" onclick="toggleSearch()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button class="icon-btn" onclick="showRoomInfo()">
                             <i class="fas fa-info-circle"></i>
                         </button>
                     </div>
@@ -109,44 +109,47 @@
                 <!-- Search Bar -->
                 <div class="search-bar" id="searchBar" style="display: none;">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search messages..." onkeyup="searchMessages()">
-                    <button onclick="closeSearch()" class="close-search">
-                        <i class="fas fa-times"></i>
-                    </button>
+                    <input type="text" id="searchInput" placeholder="Search messages...">
+                    <button onclick="closeSearch()" class="close-search"><i class="fas fa-times"></i></button>
                 </div>
                 
-                <!-- Messages Container -->
-                <div class="chat-messages" id="chatMessages">
-                    <div class="loading-messages">
-                        <div class="loader"></div>
+                <!-- Messages -->
+                <div class="messages-area" id="messagesArea">
+                    <div class="loading">
+                        <div class="spinner"></div>
                         <p>Loading messages...</p>
                     </div>
                 </div>
                 
-                <!-- Typing Indicator -->
-                <div class="typing-indicator" id="typingIndicator" style="display: none;">
-                    <span class="typing-dots"></span>
-                    <span id="typingUsers">Someone</span> is typing...
+                <!-- Typing -->
+                <div class="typing-area" id="typingArea" style="display: none;">
+                    <div class="typing-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span id="typingUser">Someone</span> is typing...
                 </div>
                 
-                <!-- Input Area -->
-                <div class="chat-input-area">
-                    <div class="input-toolbar">
-                        <button class="toolbar-btn" onclick="toggleEmojiPicker()" title="Emojis">
+                <!-- Input -->
+                <div class="input-area">
+                    <div class="input-tools">
+                        <button class="tool-btn" onclick="toggleEmojiPicker()" title="Emoji">
                             <i class="fas fa-smile"></i>
                         </button>
-                        <button class="toolbar-btn" onclick="attachFile()" title="Attach file">
+                        <button class="tool-btn" onclick="attachFile()" title="Attach">
                             <i class="fas fa-paperclip"></i>
                         </button>
-                        <button class="toolbar-btn" onclick="showCodeSnippet()" title="Code snippet">
+                        <button class="tool-btn" onclick="showCodeModal()" title="Code">
                             <i class="fas fa-code"></i>
+                        </button>
+                        <button class="tool-btn" onclick="showCommands()" title="Commands">
+                            <i class="fas fa-terminal"></i>
                         </button>
                         <input type="file" id="fileInput" style="display: none;" accept="image/*" onchange="uploadFile(this)">
                     </div>
                     <div class="input-wrapper">
-                        <textarea id="messageInput" placeholder="Type your message here..." rows="2" onkeypress="handleKeyPress(event)" oninput="onTyping()"></textarea>
+                        <textarea id="messageInput" rows="1" placeholder="Type a message... ( /help for commands )" onkeypress="handleKeyPress(event)" oninput="onTyping()"></textarea>
                         <button class="send-btn" onclick="sendMessage()">
-                            <i class="fas fa-paper-plane"></i> Send
+                            <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
                 </div>
@@ -154,84 +157,90 @@
         </div>
     </div>
     
-    <!-- Emoji Picker Modal -->
+    <!-- Emoji Picker -->
     <div id="emojiPicker" class="emoji-picker" style="display: none;">
         <div class="emoji-header">
-            <h4>Choose an emoji</h4>
-            <button onclick="closeEmojiPicker()">&times;</button>
+            <span>Emojis</span>
+            <button onclick="closeEmojiPicker()"><i class="fas fa-times"></i></button>
         </div>
-        <div class="emoji-list" id="emojiList"></div>
+        <div class="emoji-grid" id="emojiGrid"></div>
     </div>
     
     <!-- Create Room Modal -->
     <div id="createRoomModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('createRoomModal')">&times;</span>
-            <h3><i class="fas fa-plus-circle"></i> Create New Room</h3>
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-plus-circle"></i> New Room</h3>
+                <button onclick="closeModal('createRoomModal')">&times;</button>
+            </div>
             <form id="createRoomForm">
-                <div class="form-group">
+                <div class="form-field">
                     <label>Room Name</label>
-                    <input type="text" id="roomName" required placeholder="e.g., react-developers">
+                    <input type="text" id="roomName" required placeholder="e.g., react-dev">
                 </div>
-                <div class="form-group">
+                <div class="form-field">
                     <label>Description</label>
-                    <textarea id="roomDescriptionInput" rows="2" placeholder="What's this room about?"></textarea>
+                    <textarea id="roomDescInput" rows="2" placeholder="What's this room about?"></textarea>
                 </div>
-                <div class="form-group">
+                <div class="form-field">
                     <label>Icon</label>
-                    <select id="roomIcon">
+                    <select id="roomIconSelect">
                         <option value="fas fa-comments">💬 General</option>
                         <option value="fab fa-js">🟨 JavaScript</option>
                         <option value="fab fa-python">🐍 Python</option>
                         <option value="fab fa-react">⚛️ React</option>
                         <option value="fas fa-brain">🧠 AI</option>
-                        <option value="fas fa-gamepad">🎮 Gaming</option>
+                        <option value="fas fa-mobile-alt">📱 Mobile</option>
+                        <option value="fas fa-cloud">☁️ Cloud</option>
                     </select>
                 </div>
-                <button type="submit" class="btn">Create Room</button>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('createRoomModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Create</button>
+                </div>
             </form>
         </div>
     </div>
     
-    <!-- Profile Edit Modal -->
+    <!-- Profile Modal -->
     <div id="profileModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('profileModal')">&times;</span>
-            <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
+                <button onclick="closeModal('profileModal')">&times;</button>
+            </div>
             <form id="profileForm">
-                <div class="form-group">
-                    <label>Display Name</label>
+                <div class="form-field">
+                    <label>Name</label>
                     <input type="text" id="displayName" required>
                 </div>
-                <div class="form-group">
+                <div class="form-field">
+                    <label>Status</label>
+                    <input type="text" id="statusMsg" placeholder="What's on your mind?">
+                </div>
+                <div class="form-field">
                     <label>Avatar</label>
-                    <div class="avatar-selector">
-                        <div class="avatar-option" onclick="selectAvatar('😀')">😀</div>
-                        <div class="avatar-option" onclick="selectAvatar('👨‍💻')">👨‍💻</div>
-                        <div class="avatar-option" onclick="selectAvatar('🚀')">🚀</div>
-                        <div class="avatar-option" onclick="selectAvatar('💻')">💻</div>
-                        <div class="avatar-option" onclick="selectAvatar('🤖')">🤖</div>
-                        <div class="avatar-option" onclick="selectAvatar('🎨')">🎨</div>
-                    </div>
-                    <input type="hidden" id="userAvatarEmoji">
+                    <div class="avatar-grid" id="avatarGrid"></div>
+                    <input type="hidden" id="selectedAvatar">
                 </div>
-                <div class="form-group">
-                    <label>Status Message</label>
-                    <input type="text" id="statusMessage" placeholder="What's on your mind?">
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('profileModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save</button>
                 </div>
-                <button type="submit" class="btn">Save Changes</button>
             </form>
         </div>
     </div>
     
-    <!-- Code Snippet Modal -->
+    <!-- Code Modal -->
     <div id="codeModal" class="modal" style="display: none;">
-        <div class="modal-content code-modal">
-            <span class="close" onclick="closeModal('codeModal')">&times;</span>
-            <h3><i class="fas fa-code"></i> Insert Code Snippet</h3>
-            <div class="form-group">
+        <div class="modal-box code-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-code"></i> Code Snippet</h3>
+                <button onclick="closeModal('codeModal')">&times;</button>
+            </div>
+            <div class="form-field">
                 <label>Language</label>
-                <select id="codeLanguage">
+                <select id="codeLang">
                     <option value="javascript">JavaScript</option>
                     <option value="python">Python</option>
                     <option value="html">HTML</option>
@@ -239,19 +248,32 @@
                     <option value="json">JSON</option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-field">
                 <label>Code</label>
-                <textarea id="codeContent" rows="8" placeholder="Paste your code here..."></textarea>
+                <textarea id="codeContent" rows="6" placeholder="Paste your code..."></textarea>
             </div>
-            <button class="btn" onclick="insertCodeSnippet()">Insert Code</button>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('codeModal')">Cancel</button>
+                <button class="btn-primary" onclick="insertCode()">Insert</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Commands Modal -->
+    <div id="commandsModal" class="modal" style="display: none;">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-terminal"></i> Commands</h3>
+                <button onclick="closeModal('commandsModal')">&times;</button>
+            </div>
+            <div class="commands-list" id="commandsList"></div>
         </div>
     </div>
     
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../js/main.js"></script>
-    <script src="../js/advanced-chat.js"></script>
+    <script src="../js/chat.js"></script>
 </body>
 </html>
