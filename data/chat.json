@@ -1,0 +1,82 @@
+{
+    "rooms": [
+        {
+            "id": "general",
+            "name": "General Discussion",
+            "description": "General chat for all developers",
+            "icon": "fas fa-comments",
+            "createdAt": "2024-01-01T00:00:00Z",
+            "isPrivate": false
+        },
+        {
+            "id": "tech",
+            "name": "Technology & Innovation",
+            "description": "Discuss latest tech trends and innovations",
+            "icon": "fas fa-microchip",
+            "createdAt": "2024-01-01T00:00:00Z",
+            "isPrivate": false
+        },
+        {
+            "id": "projects",
+            "name": "Project Collaboration",
+            "description": "Collaborate on open source projects",
+            "icon": "fas fa-project-diagram",
+            "createdAt": "2024-01-01T00:00:00Z",
+            "isPrivate": false
+        },
+        {
+            "id": "help",
+            "name": "Help & Support",
+            "description": "Get help with coding problems",
+            "icon": "fas fa-question-circle",
+            "createdAt": "2024-01-01T00:00:00Z",
+            "isPrivate": false
+        },
+        {
+            "id": "javascript",
+            "name": "JavaScript Masters",
+            "description": "Deep dive into JavaScript",
+            "icon": "fab fa-js",
+            "createdAt": "2024-01-01T00:00:00Z",
+            "isPrivate": false
+        },
+        {
+            "id": "python",
+            "name": "Python Developers",
+            "description": "Python programming discussions",
+            "icon": "fab fa-python",
+            "createdAt": "2024-01-01T00:00:00Z",
+            "isPrivate": false
+        }
+    ],
+    "messages": {
+        "general": [
+            {
+                "id": "msg1",
+                "senderId": "system",
+                "senderName": "System",
+                "senderAvatar": "🤖",
+                "text": "Welcome to Developer Chat! Feel free to ask questions and share knowledge.",
+                "timestamp": "2024-01-01T00:00:00Z",
+                "type": "system",
+                "reactions": [],
+                "isPinned": false
+            }
+        ],
+        "tech": [],
+        "projects": [],
+        "help": [],
+        "javascript": [],
+        "python": []
+    },
+    "users": {
+        "online": [],
+        "typing": {}
+    },
+    "settings": {
+        "maxMessageLength": 500,
+        "messageCooldown": 2,
+        "allowedFileTypes": ["image/png", "image/jpeg", "image/gif"],
+        "maxFileSize": 5242880
+    }
+}
