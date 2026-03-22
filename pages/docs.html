@@ -3,128 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation - Aung Myo Kyaw</title>
+    <title>Documentation - Aung Myo Kyaw Developer Platforms</title>
     <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/main.css">
-    <style>
-        .docs-container {
-            display: flex;
-            gap: 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .docs-sidebar {
-            width: 280px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 25px;
-            position: sticky;
-            top: 20px;
-            height: fit-content;
-        }
-        
-        .docs-sidebar h3 {
-            color: #667eea;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
-        }
-        
-        .docs-nav {
-            list-style: none;
-        }
-        
-        .docs-nav li {
-            margin-bottom: 12px;
-        }
-        
-        .docs-nav a {
-            color: #666;
-            text-decoration: none;
-            display: block;
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .docs-nav a:hover, .docs-nav a.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-        
-        .docs-content {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-        }
-        
-        .doc-section {
-            display: none;
-        }
-        
-        .doc-section.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .doc-section h1 {
-            color: #667eea;
-            margin-bottom: 20px;
-        }
-        
-        .doc-section h2 {
-            color: #333;
-            margin: 30px 0 15px;
-        }
-        
-        .doc-section p {
-            color: #666;
-            line-height: 1.8;
-            margin-bottom: 15px;
-        }
-        
-        .code-block {
-            background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 20px;
-            border-radius: 10px;
-            overflow-x: auto;
-            margin: 20px 0;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .tip-box {
-            background: #e8f4fd;
-            border-left: 4px solid #667eea;
-            padding: 15px 20px;
-            margin: 20px 0;
-            border-radius: 8px;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @media (max-width: 768px) {
-            .docs-container {
-                flex-direction: column;
-            }
-            
-            .docs-sidebar {
-                width: 100%;
-                position: static;
-            }
-            
-            .docs-content {
-                padding: 25px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="../css/docs.css">
 </head>
 <body>
     <canvas id="bg-canvas"></canvas>
@@ -155,123 +38,843 @@
             <li class="auth-link-item register-link"><a href="../auth/register.html"><i class="fas fa-user-plus"></i> Register</a></li>
             <li class="auth-link-item logout-link" style="display: none;"><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
-        <div id="userInfo" style="margin-top: auto; padding-top: 20px;"></div>
+        <div id="userInfo"></div>
     </div>
     
     <div class="menu-overlay" id="menuOverlay"></div>
     
     <div class="main-content">
-        <div class="docs-container">
-            <div class="docs-sidebar">
-                <h3><i class="fas fa-book"></i> Documentation</h3>
-                <ul class="docs-nav">
-                    <li><a href="#" onclick="showDoc('getting-started', this)">Getting Started</a></li>
-                    <li><a href="#" onclick="showDoc('platforms-guide', this)">Platforms Guide</a></li>
-                    <li><a href="#" onclick="showDoc('projects-guide', this)">Projects Guide</a></li>
-                    <li><a href="#" onclick="showDoc('api-reference', this)">API Reference</a></li>
-                    <li><a href="#" onclick="showDoc('faq', this)">FAQ</a></li>
-                </ul>
-            </div>
+        <div class="docs-wrapper">
+            <!-- Sidebar Navigation -->
+            <aside class="docs-sidebar">
+                <div class="sidebar-header">
+                    <i class="fas fa-book"></i>
+                    <h3>Documentation</h3>
+                </div>
+                <div class="sidebar-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="docSearch" placeholder="Search documentation...">
+                </div>
+                <nav class="docs-nav">
+                    <div class="nav-group">
+                        <div class="nav-group-title" onclick="toggleNavGroup(this)">
+                            <i class="fas fa-flag-checkered"></i>
+                            <span>Getting Started</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <ul class="nav-group-items">
+                            <li><a href="#" onclick="showDoc('intro')" data-doc="intro"><i class="fas fa-star"></i> Introduction</a></li>
+                            <li><a href="#" onclick="showDoc('quickstart')" data-doc="quickstart"><i class="fas fa-rocket"></i> Quick Start</a></li>
+                            <li><a href="#" onclick="showDoc('installation')" data-doc="installation"><i class="fas fa-download"></i> Installation</a></li>
+                            <li><a href="#" onclick="showDoc('first-project')" data-doc="first-project"><i class="fas fa-code"></i> First Project</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="nav-group">
+                        <div class="nav-group-title" onclick="toggleNavGroup(this)">
+                            <i class="fas fa-layer-group"></i>
+                            <span>Platforms Guide</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <ul class="nav-group-items">
+                            <li><a href="#" onclick="showDoc('platforms-overview')" data-doc="platforms-overview"><i class="fas fa-globe"></i> Overview</a></li>
+                            <li><a href="#" onclick="showDoc('ai-platforms')" data-doc="ai-platforms"><i class="fas fa-brain"></i> AI Platforms</a></li>
+                            <li><a href="#" onclick="showDoc('coding-platforms')" data-doc="coding-platforms"><i class="fas fa-code"></i> Coding Platforms</a></li>
+                            <li><a href="#" onclick="showDoc('mobile-platforms')" data-doc="mobile-platforms"><i class="fas fa-mobile-alt"></i> Mobile Platforms</a></li>
+                            <li><a href="#" onclick="showDoc('cloud-platforms')" data-doc="cloud-platforms"><i class="fas fa-cloud"></i> Cloud Platforms</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="nav-group">
+                        <div class="nav-group-title" onclick="toggleNavGroup(this)">
+                            <i class="fas fa-project-diagram"></i>
+                            <span>Projects Guide</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <ul class="nav-group-items">
+                            <li><a href="#" onclick="showDoc('projects-overview')" data-doc="projects-overview"><i class="fas fa-folder-open"></i> Overview</a></li>
+                            <li><a href="#" onclick="showDoc('creating-projects')" data-doc="creating-projects"><i class="fas fa-plus-circle"></i> Creating Projects</a></li>
+                            <li><a href="#" onclick="showDoc('contributing')" data-doc="contributing"><i class="fas fa-users"></i> Contributing</a></li>
+                            <li><a href="#" onclick="showDoc('github-integration')" data-doc="github-integration"><i class="fab fa-github"></i> GitHub Integration</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="nav-group">
+                        <div class="nav-group-title" onclick="toggleNavGroup(this)">
+                            <i class="fas fa-code"></i>
+                            <span>API Reference</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <ul class="nav-group-items">
+                            <li><a href="#" onclick="showDoc('api-overview')" data-doc="api-overview"><i class="fas fa-info-circle"></i> Overview</a></li>
+                            <li><a href="#" onclick="showDoc('authentication')" data-doc="authentication"><i class="fas fa-key"></i> Authentication</a></li>
+                            <li><a href="#" onclick="showDoc('endpoints')" data-doc="endpoints"><i class="fas fa-plug"></i> Endpoints</a></li>
+                            <li><a href="#" onclick="showDoc('error-handling')" data-doc="error-handling"><i class="fas fa-exclamation-triangle"></i> Error Handling</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="nav-group">
+                        <div class="nav-group-title" onclick="toggleNavGroup(this)">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Help & Support</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <ul class="nav-group-items">
+                            <li><a href="#" onclick="showDoc('faq')" data-doc="faq"><i class="fas fa-question"></i> FAQ</a></li>
+                            <li><a href="#" onclick="showDoc('troubleshooting')" data-doc="troubleshooting"><i class="fas fa-wrench"></i> Troubleshooting</a></li>
+                            <li><a href="#" onclick="showDoc('contact-support')" data-doc="contact-support"><i class="fas fa-envelope"></i> Contact Support</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
             
-            <div class="docs-content">
-                <div id="getting-started" class="doc-section active">
-                    <h1>Getting Started</h1>
-                    <p>Welcome to Aung Myo Kyaw Developer Platforms! This guide will help you get started with our platform and make the most of your development experience.</p>
-                    
-                    <h2>Create an Account</h2>
-                    <p>To access all features, you need to create an account. Click the Register button in the side menu and fill in your details.</p>
-                    
-                    <div class="code-block">
-                        <pre>1. Click on Register in the side menu
-2. Enter your email and password
-3. Verify your email address
-4. Login to access all features</pre>
+            <!-- Main Content -->
+            <main class="docs-content">
+                <div class="content-header">
+                    <div class="breadcrumb">
+                        <a href="home.html">Home</a>
+                        <i class="fas fa-chevron-right"></i>
+                        <span>Documentation</span>
                     </div>
-                    
-                    <h2>Explore Platforms</h2>
-                    <p>Browse through various development platforms tailored for different technologies and skill levels.</p>
-                    
-                    <div class="tip-box">
-                        <strong><i class="fas fa-lightbulb"></i> Tip:</strong> Start with the Web Development Hub if you're new to programming!
-                    </div>
-                    
-                    <h2>Join Projects</h2>
-                    <p>Contribute to open-source projects or start your own. Collaborate with developers worldwide.</p>
-                </div>
-                
-                <div id="platforms-guide" class="doc-section">
-                    <h1>Platforms Guide</h1>
-                    <p>Learn how to make the most of our development platforms.</p>
-                    
-                    <h2>Web Development Hub</h2>
-                    <p>A comprehensive platform for web developers featuring React, Vue, Angular, and modern web technologies.</p>
-                    <div class="code-block">
-                        <pre>// Example: Create a React component
-function Welcome() {
-    return &lt;h1&gt;Welcome to Web Dev Hub!&lt;/h1&gt;
-}</pre>
-                    </div>
-                    
-                    <h2>Mobile Dev Studio</h2>
-                    <p>Build cross-platform mobile apps using React Native and Flutter.</p>
-                    
-                    <h2>Cloud Computing Lab</h2>
-                    <p>Learn AWS, Google Cloud, and Azure through hands-on projects.</p>
-                </div>
-                
-                <div id="projects-guide" class="doc-section">
-                    <h1>Projects Guide</h1>
-                    <p>Everything you need to know about managing and contributing to projects.</p>
-                    
-                    <h2>Finding Projects</h2>
-                    <p>Browse projects by category, technology, or difficulty level. Use the filter buttons to narrow down your search.</p>
-                    
-                    <h2>Contributing</h2>
-                    <p>Each project has detailed instructions on how to contribute. Look for the "View Project" link to access the repository.</p>
-                    
-                    <div class="tip-box">
-                        <strong><i class="fas fa-github"></i> GitHub Integration:</strong> All projects are hosted on GitHub. Star and fork projects you're interested in!
+                    <div class="content-actions">
+                        <button class="action-btn" onclick="printDoc()" title="Print">
+                            <i class="fas fa-print"></i>
+                        </button>
+                        <button class="action-btn" onclick="copyDocLink()" title="Copy Link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                        <button class="action-btn" onclick="toggleDarkMode()" title="Dark Mode">
+                            <i class="fas fa-moon"></i>
+                        </button>
                     </div>
                 </div>
                 
-                <div id="api-reference" class="doc-section">
-                    <h1>API Reference</h1>
-                    <p>Access our platform's API to build custom integrations.</p>
+                <div class="content-body" id="docContent">
+                    <!-- Introduction -->
+                    <div id="intro" class="doc-section active">
+                        <h1>Introduction to Developer Platforms</h1>
+                        <p class="lead">Welcome to the comprehensive documentation for Aung Myo Kyaw Developer Platforms. This guide will help you understand and utilize all the features of our platform.</p>
+                        
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <i class="fas fa-layer-group"></i>
+                                <h3>50+ Platforms</h3>
+                                <p>Access to cutting-edge development platforms and tools</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-project-diagram"></i>
+                                <h3>100+ Projects</h3>
+                                <p>Open source projects to learn and contribute</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-users"></i>
+                                <h3>5000+ Developers</h3>
+                                <p>Join a growing community of developers</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box info">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <strong>What is Developer Platforms?</strong>
+                                <p>A curated collection of development resources, platforms, and projects designed to help developers learn, build, and grow.</p>
+                            </div>
+                        </div>
+                        
+                        <h2>Key Features</h2>
+                        <ul>
+                            <li><strong>Platform Discovery:</strong> Explore and compare different development platforms</li>
+                            <li><strong>Project Showcase:</strong> View and contribute to open source projects</li>
+                            <li><strong>Community Chat:</strong> Connect with other developers in real-time</li>
+                            <li><strong>Documentation:</strong> Comprehensive guides and API references</li>
+                            <li><strong>Admin Control:</strong> Manage platforms and projects with ease</li>
+                        </ul>
+                        
+                        <div class="next-steps">
+                            <h3>Next Steps</h3>
+                            <div class="next-links">
+                                <a href="#" onclick="showDoc('quickstart')" class="next-link">
+                                    <span>Quick Start Guide</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                                <a href="#" onclick="showDoc('platforms-overview')" class="next-link">
+                                    <span>Explore Platforms</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <h2>Authentication</h2>
-                    <div class="code-block">
-                        <pre>POST /api/auth/login
-Content-Type: application/json
+                    <!-- Quick Start -->
+                    <div id="quickstart" class="doc-section">
+                        <h1>Quick Start Guide</h1>
+                        <p>Get started with Developer Platforms in just a few minutes.</p>
+                        
+                        <div class="steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h3>Create an Account</h3>
+                                    <p>Sign up for a free account to access all features including chat, project contributions, and platform management.</p>
+                                    <a href="../auth/register.html" class="btn btn-primary">Register Now</a>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h3>Explore Platforms</h3>
+                                    <p>Browse through our curated list of development platforms. Filter by category, rating, or popularity.</p>
+                                    <a href="platforms.html" class="btn btn-outline">Browse Platforms</a>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h3>Join the Community</h3>
+                                    <p>Connect with other developers in our chat rooms. Ask questions, share knowledge, and collaborate.</p>
+                                    <a href="chat.html" class="btn btn-outline">Join Chat</a>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h3>Contribute to Projects</h3>
+                                    <p>Find open source projects that interest you and start contributing.</p>
+                                    <a href="projects.html" class="btn btn-outline">View Projects</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Example: Creating your first project</span>
+                                <button onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code>// Initialize a new project
+const project = {
+    name: "My First Project",
+    description: "Learning to build amazing things",
+    technologies: ["JavaScript", "HTML", "CSS"],
+    github: "https://github.com/username/project"
+};
 
-{
-    "email": "user@example.com",
-    "password": "yourpassword"
-}</pre>
+// Share with the community
+console.log("Project created successfully!");</code></pre>
+                        </div>
                     </div>
                     
-                    <h2>Get Platforms</h2>
-                    <div class="code-block">
-                        <pre>GET /api/platforms
-Authorization: Bearer YOUR_TOKEN</pre>
+                    <!-- Installation -->
+                    <div id="installation" class="doc-section">
+                        <h1>Installation Guide</h1>
+                        <p>Learn how to set up and configure the Developer Platforms locally.</p>
+                        
+                        <h2>Prerequisites</h2>
+                        <ul>
+                            <li>Node.js (v16 or higher)</li>
+                            <li>npm or yarn package manager</li>
+                            <li>Git (for version control)</li>
+                            <li>A modern web browser</li>
+                        </ul>
+                        
+                        <h2>Installation Steps</h2>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Clone the repository</span>
+                                <button onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code>git clone https://github.com/amkyawdev/developer-platforms.git
+cd developer-platforms</code></pre>
+                        </div>
+                        
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Install dependencies</span>
+                                <button onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code>npm install
+# or
+yarn install</code></pre>
+                        </div>
+                        
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Start the development server</span>
+                                <button onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code>npm start
+# or
+yarn start</code></pre>
+                        </div>
+                        
+                        <div class="info-box tip">
+                            <i class="fas fa-lightbulb"></i>
+                            <div>
+                                <strong>Pro Tip:</strong> Use `npm run dev` for hot reloading during development.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- First Project -->
+                    <div id="first-project" class="doc-section">
+                        <h1>Creating Your First Project</h1>
+                        <p>Step-by-step guide to create and share your first project.</p>
+                        
+                        <h2>Step 1: Initialize Your Project</h2>
+                        <p>Create a new project folder and initialize it with your preferred technology stack.</p>
+                        <div class="code-block">
+                            <pre><code>mkdir my-awesome-project
+cd my-awesome-project
+npm init -y</code></pre>
+                        </div>
+                        
+                        <h2>Step 2: Add Your Code</h2>
+                        <p>Write your application code. Here's a simple example:</p>
+                        <div class="code-block">
+                            <pre><code>// index.js
+console.log("Hello, Developer Platforms!");
+
+// Create a simple API endpoint
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+    res.json({ message: "Welcome to my project!" });
+});
+
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});</code></pre>
+                        </div>
+                        
+                        <h2>Step 3: Push to GitHub</h2>
+                        <div class="code-block">
+                            <pre><code>git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/username/my-awesome-project.git
+git push -u origin main</code></pre>
+                        </div>
+                        
+                        <h2>Step 4: Share Your Project</h2>
+                        <p>Visit the Projects page and click "Add New Project" to share your creation with the community.</p>
+                        <a href="projects.html" class="btn btn-primary">Share Your Project</a>
+                    </div>
+                    
+                    <!-- Platforms Overview -->
+                    <div id="platforms-overview" class="doc-section">
+                        <h1>Platforms Overview</h1>
+                        <p>Discover all the platforms available on Developer Platforms.</p>
+                        
+                        <div class="category-grid">
+                            <div class="category-card">
+                                <i class="fas fa-brain"></i>
+                                <h3>AI & Machine Learning</h3>
+                                <p>Platforms for AI development, including OpenAI, Hugging Face, and Google AI.</p>
+                                <a href="platforms.html?category=ai" class="category-link">Explore →</a>
+                            </div>
+                            <div class="category-card">
+                                <i class="fas fa-code"></i>
+                                <h3>Coding & Programming</h3>
+                                <p>Development platforms like GitHub, GitLab, and Stack Overflow.</p>
+                                <a href="platforms.html?category=coding" class="category-link">Explore →</a>
+                            </div>
+                            <div class="category-card">
+                                <i class="fas fa-mobile-alt"></i>
+                                <h3>Mobile Development</h3>
+                                <p>React Native, Flutter, Firebase, and more mobile tools.</p>
+                                <a href="platforms.html?category=mobile" class="category-link">Explore →</a>
+                            </div>
+                            <div class="category-card">
+                                <i class="fas fa-cloud"></i>
+                                <h3>Cloud & Hosting</h3>
+                                <p>AWS, Google Cloud, Azure, Vercel, Netlify platforms.</p>
+                                <a href="platforms.html?category=cloud" class="category-link">Explore →</a>
+                            </div>
+                            <div class="category-card">
+                                <i class="fas fa-database"></i>
+                                <h3>Database Platforms</h3>
+                                <p>MongoDB, PostgreSQL, MySQL, Supabase database solutions.</p>
+                                <a href="platforms.html?category=database" class="category-link">Explore →</a>
+                            </div>
+                            <div class="category-card">
+                                <i class="fas fa-language"></i>
+                                <h3>Programming Languages</h3>
+                                <p>Python, JavaScript, TypeScript, Rust, Go documentation.</p>
+                                <a href="platforms.html?category=language" class="category-link">Explore →</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Platforms -->
+                    <div id="ai-platforms" class="doc-section">
+                        <h1>AI & Machine Learning Platforms</h1>
+                        <p>Comprehensive guide to AI platforms available on Developer Platforms.</p>
+                        
+                        <h2>OpenAI</h2>
+                        <p>OpenAI provides state-of-the-art AI models including GPT-4, DALL-E, and Whisper.</p>
+                        <div class="code-block">
+                            <pre><code>// Using OpenAI API
+const response = await openai.chat.completions.create({
+    model: "gpt-4",
+    messages: [{ role: "user", content: "Hello!" }]
+});</code></pre>
+                        </div>
+                        <a href="https://openai.com" target="_blank" class="btn btn-outline">Visit OpenAI →</a>
+                        
+                        <h2>Hugging Face</h2>
+                        <p>Access thousands of pre-trained models and datasets for machine learning.</p>
+                        <div class="code-block">
+                            <pre><code>from transformers import pipeline
+
+classifier = pipeline("sentiment-analysis")
+result = classifier("I love coding!")</code></pre>
+                        </div>
+                        <a href="https://huggingface.co" target="_blank" class="btn btn-outline">Visit Hugging Face →</a>
+                        
+                        <h2>Google AI Studio</h2>
+                        <p>Build with Gemini API and Vertex AI for powerful AI applications.</p>
+                        <a href="https://makersuite.google.com" target="_blank" class="btn btn-outline">Visit Google AI →</a>
+                    </div>
+                    
+                    <!-- Coding Platforms -->
+                    <div id="coding-platforms" class="doc-section">
+                        <h1>Coding & Programming Platforms</h1>
+                        <p>Essential tools for developers to code, collaborate, and deploy.</p>
+                        
+                        <h2>GitHub</h2>
+                        <p>The world's leading developer platform for version control and collaboration.</p>
+                        <div class="code-block">
+                            <pre><code># Clone a repository
+git clone https://github.com/username/repo.git
+
+# Create a new branch
+git checkout -b feature-branch
+
+# Commit changes
+git commit -m "Add new feature"</code></pre>
+                        </div>
+                        
+                        <h2>Stack Overflow</h2>
+                        <p>Find answers to your coding questions from the developer community.</p>
+                        <div class="info-box tip">
+                            <i class="fas fa-lightbulb"></i>
+                            <div>
+                                <strong>Tip:</strong> Search for existing questions before asking new ones!
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Platforms -->
+                    <div id="mobile-platforms" class="doc-section">
+                        <h1>Mobile Development Platforms</h1>
+                        <p>Build amazing mobile apps with these cross-platform tools.</p>
+                        
+                        <h2>React Native</h2>
+                        <p>Build native mobile apps using React.</p>
+                        <div class="code-block">
+                            <pre><code>import { View, Text } from 'react-native';
+
+const App = () => (
+    &lt;View&gt;
+        &lt;Text&gt;Hello React Native!&lt;/Text&gt;
+    &lt;/View&gt;
+);</code></pre>
+                        </div>
+                        
+                        <h2>Flutter</h2>
+                        <p>Google's UI toolkit for building natively compiled applications.</p>
+                        <div class="code-block">
+                            <pre><code>import 'package:flutter/material.dart';
+
+void main() {
+    runApp(
+        MaterialApp(
+            home: Scaffold(
+                body: Center(
+                    child: Text('Hello Flutter!'),
+                ),
+            ),
+        ),
+    );
+}</code></pre>
+                        </div>
+                    </div>
+                    
+                    <!-- Cloud Platforms -->
+                    <div id="cloud-platforms" class="doc-section">
+                        <h1>Cloud & Hosting Platforms</h1>
+                        <p>Deploy and scale your applications with these cloud providers.</p>
+                        
+                        <div class="platform-comparison">
+                            <table>
+                                <thead>
+                                    <tr><th>Platform</th><th>Best For</th><th>Free Tier</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>AWS</td><td>Enterprise applications</td><td>12 months free</td></tr>
+                                    <tr><td>Google Cloud</td><td>AI/ML workloads</td><td>$300 credits</td></tr>
+                                    <tr><td>Azure</td><td>Microsoft ecosystem</td><td>$200 credits</td></tr>
+                                    <tr><td>Vercel</td><td>Frontend apps</td><td>Unlimited</td></tr>
+                                    <tr><td>Netlify</td><td>Static sites</td><td>Unlimited</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Projects Overview -->
+                    <div id="projects-overview" class="doc-section">
+                        <h1>Projects Overview</h1>
+                        <p>Explore open source projects and learn how to contribute.</p>
+                        
+                        <div class="project-stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value">24+</div>
+                                <div class="stat-label">Active Projects</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">150+</div>
+                                <div class="stat-label">Contributors</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">2.5k+</div>
+                                <div class="stat-label">GitHub Stars</div>
+                            </div>
+                        </div>
+                        
+                        <h2>Featured Projects</h2>
+                        <ul>
+                            <li><strong>E-Commerce Platform</strong> - Full-featured online store with payment integration</li>
+                            <li><strong>AI Image Generator</strong> - Text-to-image using Stable Diffusion</li>
+                            <li><strong>Real-time Chat App</strong> - Instant messaging with WebRTC</li>
+                            <li><strong>Blockchain Wallet</strong> - Web3 cryptocurrency wallet</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Creating Projects -->
+                    <div id="creating-projects" class="doc-section">
+                        <h1>Creating and Sharing Projects</h1>
+                        <p>Learn how to add your projects to the platform.</p>
+                        
+                        <h2>Project Requirements</h2>
+                        <ul>
+                            <li>A working GitHub repository</li>
+                            <li>Clear README documentation</li>
+                            <li>Open source license (MIT, Apache, GPL, etc.)</li>
+                            <li>Active maintenance or clear status</li>
+                        </ul>
+                        
+                        <h2>Submitting Your Project</h2>
+                        <div class="steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h3>Login to Admin Panel</h3>
+                                    <p>Use your admin credentials to access the management interface.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h3>Click "Add Project"</h3>
+                                    <p>Fill in project details including name, description, and GitHub URL.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h3>Save and Publish</h3>
+                                    <p>Your project will appear on the Projects page for the community to discover.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contributing -->
+                    <div id="contributing" class="doc-section">
+                        <h1>Contributing to Projects</h1>
+                        <p>How to contribute to open source projects on the platform.</p>
+                        
+                        <h2>Finding Projects</h2>
+                        <p>Browse projects by category, technology stack, or difficulty level. Look for issues labeled "good first issue" or "help wanted".</p>
+                        
+                        <h2>Contribution Workflow</h2>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Standard contribution workflow</span>
+                                <button onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code># Fork the repository
+# Clone your fork
+git clone https://github.com/your-username/project.git
+
+# Create a branch
+git checkout -b feature/your-feature
+
+# Make changes and commit
+git commit -m "Add your feature"
+
+# Push to your fork
+git push origin feature/your-feature
+
+# Create a Pull Request on GitHub</code></pre>
+                        </div>
+                        
+                        <div class="info-box warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong>Before Contributing:</strong> Always read the project's CONTRIBUTING.md file for specific guidelines.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- GitHub Integration -->
+                    <div id="github-integration" class="doc-section">
+                        <h1>GitHub Integration</h1>
+                        <p>Connect your GitHub repositories to the platform.</p>
+                        
+                        <h2>Automatic Stats Sync</h2>
+                        <p>Projects automatically sync stars, forks, and issue counts from GitHub.</p>
+                        
+                        <h2>Adding GitHub URL</h2>
+                        <div class="code-block">
+                            <pre><code>{
+    "githubUrl": "https://github.com/username/repository-name",
+    "stars": 0,  // Auto-updated
+    "forks": 0   // Auto-updated
+}</code></pre>
+                        </div>
+                    </div>
+                    
+                    <!-- API Overview -->
+                    <div id="api-overview" class="doc-section">
+                        <h1>API Overview</h1>
+                        <p>RESTful API for integrating with Developer Platforms.</p>
+                        
+                        <div class="code-block">
+                            <pre><code>Base URL: https://api.developer-platforms.com/v1
+Authentication: Bearer Token</code></pre>
+                        </div>
+                        
+                        <h2>Available Endpoints</h2>
+                        <ul>
+                            <li><code>GET /platforms</code> - List all platforms</li>
+                            <li><code>GET /platforms/:id</code> - Get platform details</li>
+                            <li><code>GET /projects</code> - List all projects</li>
+                            <li><code>GET /projects/:id</code> - Get project details</li>
+                            <li><code>GET /categories</code> - List categories</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Authentication -->
+                    <div id="authentication" class="doc-section">
+                        <h1>Authentication</h1>
+                        <p>Secure your API requests with authentication.</p>
+                        
+                        <h2>Getting an API Key</h2>
+                        <p>Contact admin to request an API key for your application.</p>
+                        
+                        <h2>Using the API Key</h2>
+                        <div class="code-block">
+                            <pre><code>fetch('https://api.developer-platforms.com/v1/platforms', {
+    headers: {
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    }
+});</code></pre>
+                        </div>
+                    </div>
+                    
+                    <!-- Endpoints -->
+                    <div id="endpoints" class="doc-section">
+                        <h1>API Endpoints Reference</h1>
+                        <p>Complete reference for all API endpoints.</p>
+                        
+                        <h2>GET /platforms</h2>
+                        <p>Returns a list of all platforms.</p>
+                        <div class="code-block">
+                            <pre><code>Response:
+{
+    "platforms": [
+        {
+            "id": 1,
+            "name": "OpenAI",
+            "category": "ai",
+            "rating": 4.9,
+            "users": "1M+"
+        }
+    ]
+}</code></pre>
+                        </div>
+                        
+                        <h2>GET /projects</h2>
+                        <p>Returns a list of all projects.</p>
+                        <div class="code-block">
+                            <pre><code>Response:
+{
+    "projects": [
+        {
+            "id": 1,
+            "name": "E-Commerce Platform",
+            "category": "web",
+            "stars": 245,
+            "forks": 89
+        }
+    ]
+}</code></pre>
+                        </div>
+                    </div>
+                    
+                    <!-- Error Handling -->
+                    <div id="error-handling" class="doc-section">
+                        <h1>Error Handling</h1>
+                        <p>Understanding API error responses.</p>
+                        
+                        <div class="code-block">
+                            <pre><code>{
+    "error": {
+        "code": 404,
+        "message": "Resource not found",
+        "details": "The requested platform does not exist"
+    }
+}</code></pre>
+                        </div>
+                        
+                        <h2>Common Error Codes</h2>
+                        <ul>
+                            <li><strong>400</strong> - Bad Request</li>
+                            <li><strong>401</strong> - Unauthorized</li>
+                            <li><strong>403</strong> - Forbidden</li>
+                            <li><strong>404</strong> - Not Found</li>
+                            <li><strong>429</strong> - Too Many Requests</li>
+                            <li><strong>500</strong> - Internal Server Error</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- FAQ -->
+                    <div id="faq" class="doc-section">
+                        <h1>Frequently Asked Questions</h1>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>How do I create an account?</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Click the "Register" button in the side menu, enter your email and password, then verify your email address to activate your account.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>How can I add my platform to the list?</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Contact admin through the Connect page or use the admin panel if you have admin access. Provide platform details, URL, and category.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Can I contribute to projects without coding experience?</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Yes! You can contribute by improving documentation, reporting bugs, suggesting features, or helping with design and UX.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Is there a mobile app?</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>We're currently developing mobile apps for iOS and Android. Stay tuned for updates!</p>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>How do I reset my password?</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Click "Forgot Password" on the login page and enter your email address. You'll receive a password reset link.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Troubleshooting -->
+                    <div id="troubleshooting" class="doc-section">
+                        <h1>Troubleshooting</h1>
+                        <p>Common issues and how to resolve them.</p>
+                        
+                        <div class="troubleshoot-item">
+                            <h3><i class="fas fa-sign-in-alt"></i> Can't login to admin panel</h3>
+                            <p>Make sure you're using the correct credentials. Default credentials are username: admin, password: admin0000. If you've changed them, use your new password.</p>
+                        </div>
+                        
+                        <div class="troubleshoot-item">
+                            <h3><i class="fas fa-database"></i> Data not loading</h3>
+                            <p>Check that the data/ folder contains platforms.json and projects.json files. Open browser console (F12) to see any error messages.</p>
+                        </div>
+                        
+                        <div class="troubleshoot-item">
+                            <h3><i class="fas fa-comments"></i> Chat not working</h3>
+                            <p>Make sure you're logged in. Check your internet connection and refresh the page.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Support -->
+                    <div id="contact-support" class="doc-section">
+                        <h1>Contact Support</h1>
+                        <p>Need help? Reach out to our support team.</p>
+                        
+                        <div class="contact-methods">
+                            <div class="contact-method">
+                                <i class="fas fa-envelope"></i>
+                                <h3>Email</h3>
+                                <p>wayne.mm.92@gmail.com</p>
+                                <button class="btn btn-outline" onclick="copyToClipboard('wayne.mm.92@gmail.com')">Copy Email</button>
+                            </div>
+                            <div class="contact-method">
+                                <i class="fab fa-github"></i>
+                                <h3>GitHub</h3>
+                                <p>@amkyawdev</p>
+                                <a href="https://github.com/amkyawdev" target="_blank" class="btn btn-outline">View Profile</a>
+                            </div>
+                            <div class="contact-method">
+                                <i class="fab fa-tiktok"></i>
+                                <h3>TikTok</h3>
+                                <p>@amkyaw.dev</p>
+                                <a href="https://tiktok.com/@amkyaw.dev" target="_blank" class="btn btn-outline">Follow</a>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box info">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <strong>Response Time:</strong> We typically respond within 24-48 hours on weekdays.
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div id="faq" class="doc-section">
-                    <h1>Frequently Asked Questions</h1>
-                    
-                    <h2>How do I reset my password?</h2>
-                    <p>Click on "Forgot Password" on the login page and enter your email address. You'll receive a password reset link.</p>
-                    
-                    <h2>Can I create my own platform?</h2>
-                    <p>Yes! Contact admin through the Connect page to discuss adding your platform to our collection.</p>
-                    
-                    <h2>Is there a mobile app?</h2>
-                    <p>We're currently developing mobile apps for iOS and Android. Stay tuned for updates!</p>
-                    
-                    <h2>How can I contribute to projects?</h2>
-                    <p>Each project has a GitHub repository. Fork the repository, make your changes, and submit a pull request.</p>
+                <div class="content-footer">
+                    <div class="feedback">
+                        <span>Was this page helpful?</span>
+                        <button onclick="feedback(true)"><i class="fas fa-thumbs-up"></i> Yes</button>
+                        <button onclick="feedback(false)"><i class="fas fa-thumbs-down"></i> No</button>
+                    </div>
+                    <div class="last-updated">
+                        Last updated: January 15, 2024
+                    </div>
                 </div>
-            </div>
+            </main>
         </div>
     </div>
     
@@ -279,25 +882,6 @@ Authorization: Bearer YOUR_TOKEN</pre>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="../js/main.js"></script>
-    <script>
-        function showDoc(sectionId, element) {
-            // Hide all sections
-            document.querySelectorAll('.doc-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Update active nav link
-            document.querySelectorAll('.docs-nav a').forEach(link => {
-                link.classList.remove('active');
-            });
-            element.classList.add('active');
-            
-            // Smooth scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    </script>
+    <script src="../js/docs.js"></script>
 </body>
 </html>
