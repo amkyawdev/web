@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Aung Myo Kyaw</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+    
+    <!-- Menu Button -->
+    <div class="menu-btn" id="menuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    
+    <!-- Side Menu -->
+    <div class="side-menu" id="sideMenu">
+        <div class="side-menu-header">
+            <i class="fas fa-code" style="font-size: 40px; color: white;"></i>
+            <h3>Aung Myo Kyaw</h3>
+            <p>Developer Platforms</p>
+        </div>
+        <ul class="side-menu-items">
+            <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="platforms.html"><i class="fas fa-layer-group"></i> Platforms</a></li>
+            <li><a href="projects.html"><i class="fas fa-project-diagram"></i> Projects</a></li>
+            <li><a href="chat.html"><i class="fas fa-comments"></i> Chat</a></li>
+            <li><a href="docs.html"><i class="fas fa-book"></i> Docs</a></li>
+            <li><a href="connect.html"><i class="fas fa-address-card"></i> Connect</a></li>
+            <li><a href="admin.html"><i class="fas fa-user-shield"></i> Admin</a></li>
+            <li class="auth-link-item login-link"><a href="../auth/login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            <li class="auth-link-item register-link"><a href="../auth/register.html"><i class="fas fa-user-plus"></i> Register</a></li>
+            <li class="auth-link-item logout-link" style="display: none;"><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+        <div id="userInfo" style="margin-top: auto; padding-top: 20px;"></div>
+    </div>
+    
+    <div class="menu-overlay" id="menuOverlay"></div>
+    
+    <div class="main-content">
+        <div class="container">
+            <!-- Admin Login Card -->
+            <div class="admin-login-card" id="adminLoginCard">
+                <div class="admin-logo">
+                    <i class="fas fa-user-shield"></i>
+                    <h2>Admin Access</h2>
+                    <p>Enter credentials to access admin panel</p>
+                </div>
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="adminUsername" required placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="adminPassword" required placeholder="Enter password">
+                    </div>
+                    <button type="submit" class="btn auth-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login as Admin
+                    </button>
+                </form>
+                <div class="admin-info">
+                    <small>Demo: admin-name / admin-password </small>
+                </div>
+            </div>
+            
+            <!-- Admin Panel -->
+            <div class="admin-panel" id="adminPanel" style="display: none;">
+                <div class="admin-header">
+                    <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+                    <div class="admin-actions-top">
+                        <button class="btn btn-outline" onclick="exportData()">
+                            <i class="fas fa-download"></i> Export JSON
+                        </button>
+                        <button class="btn btn-outline" onclick="importData()">
+                            <i class="fas fa-upload"></i> Import JSON
+                        </button>
+                        <button class="btn btn-danger" onclick="logoutAdmin()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="admin-stats">
+                    <div class="stat-card" onclick="showSection('platforms')">
+                        <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Platforms</h3>
+                            <div class="stat-number" id="totalPlatforms">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" onclick="showSection('projects')">
+                        <div class="stat-icon"><i class="fas fa-project-diagram"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Projects</h3>
+                            <div class="stat-number" id="totalProjects">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-info">
+                            <h3>Active Users</h3>
+                            <div class="stat-number" id="activeUsers">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Views</h3>
+                            <div class="stat-number" id="totalViews">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab Navigation -->
+                <div class="admin-tabs">
+                    <button class="tab-btn active" data-tab="platforms" onclick="showTab('platforms')">
+                        <i class="fas fa-layer-group"></i> Platforms
+                    </button>
+                    <button class="tab-btn" data-tab="projects" onclick="showTab('projects')">
+                        <i class="fas fa-project-diagram"></i> Projects
+                    </button>
+                    <button class="tab-btn" data-tab="json-editor" onclick="showTab('json-editor')">
+                        <i class="fas fa-code"></i> JSON Editor
+                    </button>
+                    <button class="tab-btn" data-tab="settings" onclick="showTab('settings')">
+                        <i class="fas fa-cog"></i> Settings
+                    </button>
+                </div>
+                
+                <!-- Platforms Tab -->
+                <div id="platformsTab" class="tab-content active">
+                    <div class="admin-section-header">
+                        <h3><i class="fas fa-layer-group"></i> Manage Platforms</h3>
+                        <button class="btn btn-primary" onclick="openPlatformModal()">
+                            <i class="fas fa-plus"></i> Add New Platform
+                        </button>
+                    </div>
+                    <div class="admin-search">
+                        <input type="text" id="platformSearch" placeholder="Search platforms..." onkeyup="searchPlatforms()">
+                        <select id="platformCategoryFilter" onchange="filterPlatformsByCategory()">
+                            <option value="all">All Categories</option>
+                            <option value="ai">AI & ML</option>
+                            <option value="coding">Coding</option>
+                            <option value="mobile">Mobile</option>
+                            <option value="cloud">Cloud</option>
+                            <option value="database">Database</option>
+                            <option value="language">Languages</option>
+                        </select>
+                    </div>
+                    <div id="platformsList" class="admin-list"></div>
+                </div>
+                
+                <!-- Projects Tab -->
+                <div id="projectsTab" class="tab-content">
+                    <div class="admin-section-header">
+                        <h3><i class="fas fa-project-diagram"></i> Manage Projects</h3>
+                        <button class="btn btn-primary" onclick="openProjectModal()">
+                            <i class="fas fa-plus"></i> Add New Project
+                        </button>
+                    </div>
+                    <div class="admin-search">
+                        <input type="text" id="projectSearch" placeholder="Search projects..." onkeyup="searchProjects()">
+                        <select id="projectCategoryFilter" onchange="filterProjectsByCategory()">
+                            <option value="all">All Categories</option>
+                            <option value="Web">Web Development</option>
+                            <option value="Mobile">Mobile Apps</option>
+                            <option value="AI">AI/ML</option>
+                            <option value="Game">Game Dev</option>
+                        </select>
+                    </div>
+                    <div id="projectsList" class="admin-list"></div>
+                </div>
+                
+                <!-- JSON Editor Tab -->
+                <div id="jsonEditorTab" class="tab-content">
+                    <div class="admin-section-header">
+                        <h3><i class="fas fa-code"></i> JSON Data Editor</h3>
+                        <div class="json-actions">
+                            <button class="btn btn-success" onclick="saveJsonToFile()">
+                                <i class="fas fa-save"></i> Save to File
+                            </button>
+                            <button class="btn btn-warning" onclick="formatJson()">
+                                <i class="fas fa-magic"></i> Format JSON
+                            </button>
+                            <button class="btn btn-danger" onclick="resetJson()">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="json-editor-container">
+                        <div class="json-tabs">
+                            <button class="json-tab-btn active" onclick="switchJsonTab('platforms')">
+                                <i class="fas fa-layer-group"></i> platforms.json
+                            </button>
+                            <button class="json-tab-btn" onclick="switchJsonTab('projects')">
+                                <i class="fas fa-project-diagram"></i> projects.json
+                            </button>
+                        </div>
+                        <textarea id="jsonEditor" class="json-editor" rows="20" placeholder="JSON data will appear here..."></textarea>
+                        <div class="json-status" id="jsonStatus"></div>
+                    </div>
+                </div>
+                
+                <!-- Settings Tab -->
+                <div id="settingsTab" class="tab-content">
+                    <div class="admin-section-header">
+                        <h3><i class="fas fa-cog"></i> Admin Settings</h3>
+                    </div>
+                    <div class="settings-group">
+                        <h4>Data Management</h4>
+                        <div class="setting-item">
+                            <button class="btn btn-danger" onclick="clearAllData()">
+                                <i class="fas fa-trash"></i> Clear All Data
+                            </button>
+                            <button class="btn btn-primary" onclick="backupData()">
+                                <i class="fas fa-database"></i> Backup Data
+                            </button>
+                            <button class="btn btn-success" onclick="restoreBackup()">
+                                <i class="fas fa-upload"></i> Restore Backup
+                            </button>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <h4>Admin Credentials</h4>
+                        <div class="setting-item">
+                            <label>Change Password</label>
+                            <input type="password" id="newPassword" placeholder="New password">
+                            <input type="password" id="confirmPassword" placeholder="Confirm password">
+                            <button class="btn" onclick="changeAdminPassword()">Update Password</button>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <h4>System Info</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <strong>Version:</strong> <span id="systemVersion">3.0.0</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Last Updated:</strong> <span id="lastUpdated">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Platforms Count:</strong> <span id="infoPlatformsCount">0</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Projects Count:</strong> <span id="infoProjectsCount">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Platform Modal -->
+    <div id="platformModal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="platformModalTitle"><i class="fas fa-plus"></i> Add New Platform</h3>
+                <span class="close" onclick="closeModal('platformModal')">&times;</span>
+            </div>
+            <form id="platformForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Platform Name *</label>
+                        <input type="text" id="platformName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <select id="platformCategory" required>
+                            <option value="ai">AI & Machine Learning</option>
+                            <option value="coding">Coding & Programming</option>
+                            <option value="mobile">Mobile Development</option>
+                            <option value="cloud">Cloud Storage & Hosting</option>
+                            <option value="database">Database Platforms</option>
+                            <option value="language">Programming Languages</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Short Description</label>
+                    <input type="text" id="platformShortDesc" placeholder="e.g., GPT-4, DALL-E, API">
+                </div>
+                <div class="form-group">
+                    <label>Full Description *</label>
+                    <textarea id="platformDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Icon Class</label>
+                        <input type="text" id="platformIcon" value="fas fa-cube">
+                        <small>Font Awesome icon class (e.g., fab fa-github)</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Website URL *</label>
+                        <input type="url" id="platformWebsite" required placeholder="https://...">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Documentation URL</label>
+                        <input type="url" id="platformDocs" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label>Users / Popularity</label>
+                        <input type="text" id="platformUsers" placeholder="e.g., 1M+">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Rating (1-5)</label>
+                        <input type="number" id="platformRating" step="0.1" min="0" max="5" value="4.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Founded Year</label>
+                        <input type="text" id="platformFounded" placeholder="e.g., 2015">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tags (comma separated)</label>
+                    <input type="text" id="platformTags" placeholder="e.g., GPT-4, API, AI">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="platformFeatured"> Featured Platform
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('platformModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Platform</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="projectModalTitle"><i class="fas fa-plus"></i> Add New Project</h3>
+                <span class="close" onclick="closeModal('projectModal')">&times;</span>
+            </div>
+            <form id="projectForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Project Name *</label>
+                        <input type="text" id="projectName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <select id="projectCategory" required>
+                            <option value="Web">Web Development</option>
+                            <option value="Mobile">Mobile Apps</option>
+                            <option value="AI">AI/ML</option>
+                            <option value="Game">Game Development</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description *</label>
+                    <textarea id="projectDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tech Stack (comma separated)</label>
+                    <input type="text" id="projectTech" placeholder="e.g., React, Node.js, MongoDB">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>GitHub/Project URL</label>
+                        <input type="url" id="projectUrl" placeholder="https://github.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>Demo URL</label>
+                        <input type="url" id="projectDemo" placeholder="https://...">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Stars</label>
+                        <input type="number" id="projectStars" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Forks</label>
+                        <input type="number" id="projectForks" value="0">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('projectModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>
